@@ -5,6 +5,12 @@
 static class ActivationFunctions
 {
 public:
+	static enum ActivationFunction
+	{
+		RELU,
+		Sigmoid,
+	};
+
 	static double RELU(double linearFunc)
 	{
 		return fmax(0, linearFunc);
