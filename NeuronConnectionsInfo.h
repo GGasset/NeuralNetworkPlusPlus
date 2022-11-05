@@ -12,13 +12,25 @@ public:
 
 	list<double> Weights;
 
-	NeuronConnectionsInfo(int layerI, int previousLayerLength, double minWeight, double weightClosestTo0, double maxWeight)
+	double Bias;
+
+	NeuronConnectionsInfo(int layerI, int previousLayerLength, double bias, double minWeight, double weightClosestTo0, double maxWeight)
 	{
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
 		tuple<list<int>, list<int>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI, 0, previousLayerLength);
 		Xs = get<0>(connectedPositions);
 		Ys = get<1>(connectedPositions);
+		Bias = bias;
+	}
+
+	NeuronConnectionsInfo() {
+
+	}
+
+	double Execute(double** neuronsActivation)
+	{
+
 	}
 
 	tuple<list<double>, list<double>> GetGradients(double biasGrad, double** networkActivations)
