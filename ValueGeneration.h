@@ -3,6 +3,7 @@ using namespace std;
 #include <stdlib.h>
 #include <math.h>
 #include <list>
+#include <tuple>
 
 static class ValueGeneration
 {
@@ -53,6 +54,22 @@ public:
 		{
 			output.push_front(GenerateWeight(minValue, valueClosestTo0, maxValue));
 		}
+		return output;
+	}
+
+	static tuple<list<int>, list<int>> GenerateConnectedPositions(int x, int startingY, int outputLength)
+	{
+		list<int> Xs, Ys;
+		Xs = list<int>();
+		Ys = list<int>();
+
+		for (int i = 0; i < outputLength; i++)
+		{
+			Xs.push_back(x);
+			Ys.push_back(startingY + i);
+		}
+
+		tuple<list<int>, list<int>> output(Xs, Ys);
 		return output;
 	}
 
