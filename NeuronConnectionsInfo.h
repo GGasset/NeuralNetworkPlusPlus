@@ -42,7 +42,7 @@ public:
 		return output;
 	}
 
-	tuple<list<double>, list<double>> GetGradients(double biasGrad, double** networkActivations)
+	tuple<list<double>, list<double>> GetGradients(double activationGradient, double** networkActivations)
 	{
 		list<double> weightGradients, previousActivationsGradients;
 		weightGradients = list<double>();
@@ -53,8 +53,8 @@ public:
 
 		for (int i = 0; i < GetConnectionsLength(); i++, xsIterator++, ysIterator++, weightsIterator++)
 		{
-			weightGradients.push_back(biasGrad * networkActivations[*xsIterator][*ysIterator]);
-			previousActivationsGradients.push_back(biasGrad * *weightsIterator);
+			weightGradients.push_back(activationGradient * networkActivations[*xsIterator][*ysIterator]);
+			previousActivationsGradients.push_back(activationGradient * *weightsIterator);
 		}
 
 		tuple<list<double>, list<double>> output(weightGradients, previousActivationsGradients);
