@@ -1,6 +1,8 @@
 #pragma once
 #include "NeuronConnectionsInfo.h";
 #include "ActivationFunctions.h"
+#include <list>
+#include <tuple>
 
 class Neuron
 {
@@ -16,9 +18,14 @@ public:
 
 	}
 
-	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationFunction)
+	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		return ActivationFunctions::Activate(connections.Execute(neuronActivations), activationFunction);
+		return ActivationFunctions::Activate(connections.Execute(neuronActivations), activationType);
+	}
+
+	tuple<list<double>, list<double>> GetGradients(double activationCost, ActivationFunctions::ActivationFunction activationType)
+	{
+
 	}
 };
 
