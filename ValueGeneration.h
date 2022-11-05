@@ -1,12 +1,14 @@
 #pragma once
+using namespace std;
 #include <stdlib.h>
 #include <math.h>
+#include <list>
 
 static class ValueGeneration
 {
 
 public:
-	static double GenerateWeight(double maxValue, double minValue, double valueClosestTo0)
+	static double GenerateWeight(double minValue, double valueClosestTo0, double maxValue)
 	{
 		double maxValueCp = maxValue;
 		double minValueCp = minValue;
@@ -31,6 +33,32 @@ public:
 		output += minValue * areMinAndMaxValuesPositive;
 		output += maxValue * areMinAndMaxValuesNegative;
 
+		double outputAdditionMultiplier = NextDouble();
+
+		// Set output to its final value if min value is negative and max value positive
+		output += (outputAdditionMultiplier * (maxValue - valueClosestTo0)) * (isMaxValuePositiveAndMinValueNegative && outputMultiplier == 1);
+		output += (outputAdditionMultiplier * (valueClosestTo0 - minValue)) * (isMaxValuePositiveAndMinValueNegative && outputMultiplier == -1);
+
+		// Set output to its final state if both min/max values are positive or negative
+		output += (outputAdditionMultiplier * (maxValue - minValue) * areMinAndMaxValuesPositive);
+		output += (outputAdditionMultiplier * (minValue - maxValue) * areMinAndMaxValuesNegative);
+
+		return output;
+	}
+
+	static list<double> GenerateWeigths(int outputLength, double minValue, double valueClosestTo0, double maxValue)
+	{
+		list<double> output = list<double>();
+		for (int i = 0; i < outputLength; i++)
+		{
+			output.push_front(GenerateWeight(minValue, valueClosestTo0, maxValue));
+		}
+		return output;
+	}
+
+	static double NextDouble()
+	{
+		return (rand() % 1001) / 1000.0;
 	}
 };
 

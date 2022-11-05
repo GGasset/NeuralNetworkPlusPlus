@@ -2,10 +2,10 @@
 //
 
 #include <iostream>
+#include "ValueGeneration.h"
 
 int main()
 {
-    
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
