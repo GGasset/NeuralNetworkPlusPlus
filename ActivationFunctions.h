@@ -1,8 +1,9 @@
 #pragma once
 #include <math.h>
 #include <cmath>
+#include <stdexcept>
 
-static class ActivationFunctions
+class ActivationFunctions
 {
 public:
 	static enum ActivationFunction
@@ -20,7 +21,7 @@ public:
 		case ActivationFunctions::Sigmoid:
 			return SigmoidActivation(linearFunc);
 		default:
-			throw new exception("Not implemented activation function used");
+			return 0;
 		}
 	}
 

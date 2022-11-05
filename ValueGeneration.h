@@ -47,35 +47,35 @@ public:
 		return output;
 	}
 
-	static list<double> GenerateWeigths(int outputLength, double minValue, double valueClosestTo0, double maxValue)
+	static list<double> GenerateWeigths(long outputLength, double minValue, double valueClosestTo0, double maxValue)
 	{
 		list<double> output = list<double>();
-		for (int i = 0; i < outputLength; i++)
+		for (long i = 0; i < outputLength; i++)
 		{
 			output.push_front(GenerateWeight(minValue, valueClosestTo0, maxValue));
 		}
 		return output;
 	}
 
-	static tuple<list<int>, list<int>> GenerateConnectedPositions(int x, int startingY, int outputLength)
+	static tuple<list<long>, list<long>> GenerateConnectedPositions(long x, long startingY, long outputLength)
 	{
-		list<int> Xs, Ys;
-		Xs = list<int>();
-		Ys = list<int>();
+		list<long> Xs, Ys;
+		Xs = list<long>();
+		Ys = list<long>();
 
-		for (int i = 0; i < outputLength; i++)
+		for (long i = 0; i < outputLength; i++)
 		{
 			Xs.push_back(x);
 			Ys.push_back(startingY + i);
 		}
 
-		tuple<list<int>, list<int>> output(Xs, Ys);
+		tuple<list<long>, list<long>> output(Xs, Ys);
 		return output;
 	}
 
 	static double NextDouble()
 	{
-		return (rand() % 1001) / 1000.0;
+		return (rand() % 1000) / 1000.0;
 	}
 };
 

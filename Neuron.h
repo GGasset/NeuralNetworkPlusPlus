@@ -1,5 +1,6 @@
 #pragma once
 #include "NeuronConnectionsInfo.h";
+#include "ActivationFunctions.h"
 
 class Neuron
 {
@@ -15,6 +16,9 @@ public:
 
 	}
 
-
+	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationFunction)
+	{
+		return ActivationFunctions::Activate(connections.Execute(neuronActivations), activationFunction);
+	}
 };
 

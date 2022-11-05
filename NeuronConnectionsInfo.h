@@ -7,18 +7,18 @@ using namespace std;
 class NeuronConnectionsInfo
 {
 public:
-	list<int> Xs;
-	list<int> Ys;
+	list<long> Xs;
+	list<long> Ys;
 
 	list<double> Weights;
 
 	double Bias;
 
-	NeuronConnectionsInfo(int layerI, int previousLayerLength, double bias, double minWeight, double weightClosestTo0, double maxWeight)
+	NeuronConnectionsInfo(int layerI, long previousLayerLength, double bias, double minWeight, double weightClosestTo0, double maxWeight)
 	{
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
-		tuple<list<int>, list<int>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI, 0, previousLayerLength);
+		tuple<list<long>, list<long>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI, 0, previousLayerLength);
 		Xs = get<0>(connectedPositions);
 		Ys = get<1>(connectedPositions);
 		Bias = bias;
