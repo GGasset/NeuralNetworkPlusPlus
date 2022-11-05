@@ -6,6 +6,7 @@
 #pragma once
 static class Derivatives
 {
+public:
 	static double DerivativeOf(double linearFunction, ActivationFunctions::ActivationFunction ActivationType)
 	{
 		switch (ActivationType)
