@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActivationFunctions.cpp" />
     <ClCompile Include="NeuralNetwork++.cpp" />
     <ClCompile Include="Neuron.cpp" />
     <ClCompile Include="NeuronalNetwork.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="ValueGeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActivationFunctions.h" />
     <ClInclude Include="Neuron.h" />
     <ClInclude Include="NeuronalNetwork.h" />
     <ClInclude Include="NeuronConnectionsInfo.h" />
