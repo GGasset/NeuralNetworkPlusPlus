@@ -25,12 +25,21 @@ public:
 	}
 
 	NeuronConnectionsInfo() {
-
+		Bias = 1;
 	}
 
-	double Execute(double** neuronsActivation)
+	double Execute(double** neuronsActivations)
 	{
+		double output = Bias;
+		auto xsIterator = Xs.cbegin();
+		auto ysIterator = Ys.cbegin();
+		auto weightsIterator = Weights.cbegin();
 
+		for (long i = 0; i < GetConnectionsLength(); i++, xsIterator++, ysIterator++, weightsIterator++)
+		{
+			output += neuronsActivations[*xsIterator][*ysIterator] * *weightsIterator;
+		}
+		return output;
 	}
 
 	tuple<list<double>, list<double>> GetGradients(double biasGrad, double** networkActivations)
