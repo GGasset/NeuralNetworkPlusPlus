@@ -13,7 +13,6 @@ public:
 	static double Sigmoid(double linearFunc)
 	{
 		return 1 / (1 + exp(-linearFunc));
-
 	}
 };
 
