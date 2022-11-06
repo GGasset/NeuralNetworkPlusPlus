@@ -21,15 +21,26 @@ public:
 
 	}
 
+	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
+	{
+		tuple<double, double> linearAndOutput = ExecuteReturningLinearFunctionAndOutput(neuronActivations, activationType);
+		double neuronOutput = get<0>(linearAndOutput);
+		return neuronOutput;
+	}
+
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="networkActivations"></param>
 	/// <param name="activationType"></param>
 	/// <returns>tuple<linearFunction, neuronActivation></returns>
-	tuple<double, double> Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
+	tuple<double, double> ExecuteReturningLinearFunctionAndOutput(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		double activation = ActivationFunctions::Activate(connections.Execute(neuronActivations), activationType);
+		double linearFunction;
+		double activation = ActivationFunctions::Activate(linearFunction = connections.Execute(neuronActivations), activationType);
+
+		tuple<double, double> output(linearFunction, activation);
+		return output;
 	}
 
 	/// <summary>
