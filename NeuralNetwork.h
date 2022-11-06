@@ -1,6 +1,7 @@
 using namespace std;
 #include "Neuron.h"
 #include <list>
+#include <tuple>
 
 #pragma once
 class NeuralNetwork
@@ -26,6 +27,8 @@ public:
 		ActivationFunction = activationFunction;
 	}
 
+	//tuple<double* ExecuteStore(double* input)
+
 	ActivationFunctions::ActivationFunction GetActivationFunction()
 	{
 		return ActivationFunction;
@@ -36,8 +39,8 @@ public:
 		long networkLength = GetNetworkLength();
 		list<long> shape = list<long>();
 
-		auto layerIterator = neurons.cbegin();
-		for (long i = 0; i < networkLength; i++, layerIterator++)
+		auto layerIterator = neurons.begin();
+		for (long i = 0; layerIterator != neurons.end(); i++, layerIterator++)
 		{
 			shape.push_back((*layerIterator).size());
 		}

@@ -31,11 +31,11 @@ public:
 	double Execute(double** neuronsActivations)
 	{
 		double output = Bias;
-		auto xsIterator = Xs.cbegin();
-		auto ysIterator = Ys.cbegin();
-		auto weightsIterator = Weights.cbegin();
+		auto xsIterator = Xs.begin();
+		auto ysIterator = Ys.begin();
+		auto weightsIterator = Weights.begin();
 
-		for (long i = 0; i < GetConnectionsLength(); i++, xsIterator++, ysIterator++, weightsIterator++)
+		for (long i = 0; weightsIterator != Weights.end(); i++, xsIterator++, ysIterator++, weightsIterator++)
 		{
 			output += neuronsActivations[*xsIterator][*ysIterator] * *weightsIterator;
 		}
@@ -53,11 +53,11 @@ public:
 		list<double> weightGradients, previousActivationsGradients;
 		weightGradients = list<double>();
 		previousActivationsGradients = list<double>();
-		auto xsIterator = Xs.cbegin();
-		auto ysIterator = Ys.cbegin();
-		auto weightsIterator = Weights.cbegin();
+		auto xsIterator = Xs.begin();
+		auto ysIterator = Ys.begin();
+		auto weightsIterator = Weights.begin();
 
-		for (int i = 0; i < GetConnectionsLength(); i++, xsIterator++, ysIterator++, weightsIterator++)
+		for (int i = 0; weightsIterator != Weights.end(); i++, xsIterator++, ysIterator++, weightsIterator++)
 		{
 			weightGradients.push_back(activationGradient * networkActivations[*xsIterator][*ysIterator]);
 			previousActivationsGradients.push_back(activationGradient * *weightsIterator);
