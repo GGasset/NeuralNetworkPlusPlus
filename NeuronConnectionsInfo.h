@@ -14,7 +14,7 @@ public:
 
 	double Bias;
 
-	NeuronConnectionsInfo(int layerI, long previousLayerLength, double bias, double minWeight, double weightClosestTo0, double maxWeight)
+	NeuronConnectionsInfo(long layerI, long previousLayerLength, double bias, double minWeight, double weightClosestTo0, double maxWeight)
 	{
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
