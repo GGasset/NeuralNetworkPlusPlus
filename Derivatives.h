@@ -4,7 +4,7 @@
 #include "ActivationFunctions.h"
 
 #pragma once
-static class Derivatives
+class Derivatives
 {
 public:
 	static double DerivativeOf(double linearFunction, ActivationFunctions::ActivationFunction ActivationType)

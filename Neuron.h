@@ -1,12 +1,13 @@
-#pragma once
 #include "NeuronConnectionsInfo.h";
 #include "ActivationFunctions.h"
 #include "Derivatives.h"
-using namespace std;
 #include <stdlib.h>
 #include <list>
 #include <tuple>
+#define OUT
+using namespace std;
 
+#pragma once
 class Neuron
 {
 public:
@@ -23,8 +24,8 @@ public:
 
 	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		tuple<double, double> linearAndOutput = ExecuteReturningLinearFunctionAndOutput(neuronActivations, activationType);
-		double neuronOutput = get<0>(linearAndOutput);
+		double linearFunction;
+		double neuronOutput = Execute(neuronActivations, activationType, &linearFunction);
 		return neuronOutput;
 	}
 
@@ -33,14 +34,12 @@ public:
 	/// </summary>
 	/// <param name="networkActivations"></param>
 	/// <param name="activationType"></param>
-	/// <returns>tuple<linearFunction, neuronActivation></returns>
-	tuple<double, double> ExecuteReturningLinearFunctionAndOutput(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
+	/// <returns>neuronActivation</returns>
+	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType, double* linearFunction)
 	{
-		double linearFunction;
-		double activation = ActivationFunctions::Activate(linearFunction = connections.Execute(neuronActivations), activationType);
+		double activation = ActivationFunctions::Activate(*linearFunction = connections.Execute(neuronActivations), activationType);
 
-		tuple<double, double> output(linearFunction, activation);
-		return output;
+		return activation;
 	}
 
 	/// <summary>
@@ -49,7 +48,7 @@ public:
 	/// <param name="linearFunction"></param>
 	/// <param name="NeuronCost"></param>
 	/// <param name="activationType"></param>
-	/// <returns>tuple<weightGradients, previousActivationGradients, biasGradient></returns>
+	/// <returns>tuple(weightGradients, previousActivationGradients, biasGradient)</returns>
 	tuple<list<double>, list<double>, double> GetGradients(double** networkActivations, double linearFunction, double NeuronCost, ActivationFunctions::ActivationFunction activationType)
 	{
 		double biasGradient = NeuronCost * Derivatives::DerivativeOf(linearFunction, activationType);

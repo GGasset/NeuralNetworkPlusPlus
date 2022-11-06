@@ -5,7 +5,7 @@ using namespace std;
 #include <list>
 #include <tuple>
 
-static class ValueGeneration
+class ValueGeneration
 {
 
 public:

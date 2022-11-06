@@ -6,7 +6,7 @@
 class ActivationFunctions
 {
 public:
-	static enum ActivationFunction
+	enum ActivationFunction
 	{
 		RELU,
 		Sigmoid,

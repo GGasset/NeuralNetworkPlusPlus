@@ -47,7 +47,7 @@ public:
 	/// </summary>
 	/// <param name="activationGradient"></param>
 	/// <param name="networkActivations"></param>
-	/// <returns>tuple<weightGradients, previousActivationGradients></returns>
+	/// <returns>tuple(weightGradients, previousActivationGradients)</returns>
 	tuple<list<double>, list<double>> GetGradients(double activationGradient, double** networkActivations)
 	{
 		list<double> weightGradients, previousActivationsGradients;
