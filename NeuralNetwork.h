@@ -3,14 +3,14 @@ using namespace std;
 #include <list>
 
 #pragma once
-class NeuronalNetwork
+class NeuralNetwork
 {
 private:
 	list<list<Neuron>> neurons;
 	ActivationFunctions::ActivationFunction ActivationFunction;
 
 public:
-	NeuronalNetwork(long shapeLength, long* shape, double bias, ActivationFunctions::ActivationFunction activationFunction, double minWeight, double weightClosestTo0, double maxWeight)
+	NeuralNetwork(long shapeLength, long* shape, double bias, ActivationFunctions::ActivationFunction activationFunction, double minWeight, double weightClosestTo0, double maxWeight)
 	{
 		neurons = list<list<Neuron>>();
 		for (long i = 1; i < shapeLength; i++)

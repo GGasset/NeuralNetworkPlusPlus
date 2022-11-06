@@ -27,7 +27,7 @@
     <ClCompile Include="ValueGeneration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NeuronalNetwork.cpp">
+    <ClCompile Include="NeuralNetwork.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ActivationFunctions.cpp">
@@ -47,7 +47,7 @@
     <ClInclude Include="ValueGeneration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NeuronalNetwork.h">
+    <ClInclude Include="NeuralNetwork.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ActivationFunctions.h">
