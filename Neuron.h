@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <list>
 #include <tuple>
-#define OUT
 using namespace std;
 
 #pragma once
@@ -24,9 +23,9 @@ public:
 
 	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		double linearFunction;
-		double neuronOutput = Execute(neuronActivations, activationType, &linearFunction);
-		return neuronOutput;
+		tuple<double,double> linearAndActivation = ExecuteStore(neuronActivations, activationType);
+		double output = get<0>(linearAndActivation);
+		return output;
 	}
 
 	/// <summary>
@@ -35,11 +34,13 @@ public:
 	/// <param name="networkActivations"></param>
 	/// <param name="activationType"></param>
 	/// <returns>neuronActivation</returns>
-	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType, double* linearFunction)
+	tuple<double, double> ExecuteStore(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		double activation = ActivationFunctions::Activate(*linearFunction = connections.Execute(neuronActivations), activationType);
+		double linearFunction;
+		double activation = ActivationFunctions::Activate(linearFunction = connections.Execute(neuronActivations), activationType);
 
-		return activation;
+		tuple<double, double> output(linearFunction, activation);
+		return output;
 	}
 
 	/// <summary>
