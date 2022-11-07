@@ -67,7 +67,7 @@ public:
 		return output;
 	}
 
-	int GetConnectionsLength()
+	int GetConnectionCount()
 	{
 		return Weights.size();
 	}
