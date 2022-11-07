@@ -33,7 +33,7 @@ public:
 	/// </summary>
 	/// <param name="networkActivations"></param>
 	/// <param name="activationType"></param>
-	/// <returns>neuronActivation</returns>
+	/// <returns>tuple(linear function, neuron activation)</returns>
 	tuple<double, double> ExecuteStore(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
 		double linearFunction;
