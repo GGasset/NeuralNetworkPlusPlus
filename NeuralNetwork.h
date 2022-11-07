@@ -17,7 +17,7 @@ public:
 		for (long i = 1; i < shapeLength; i++)
 		{
 			list<Neuron> currentLayer = list<Neuron>();
-			for (long i = 0; i < shape[i]; i++)
+			for (long j = 0; j < shape[i]; j++)
 			{
 				currentLayer.push_back(Neuron(i, shape[i - 1], bias, minWeight, weightClosestTo0, maxWeight));
 			}
