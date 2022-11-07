@@ -11,7 +11,7 @@ private:
 	ActivationFunctions::ActivationFunction ActivationFunction;
 
 public:
-	NeuralNetwork(long shapeLength, long* shape, double bias, ActivationFunctions::ActivationFunction activationFunction, double minWeight, double weightClosestTo0, double maxWeight)
+	NeuralNetwork(long shapeLength, long* shape, bool deleteShapeArr, double bias, ActivationFunctions::ActivationFunction activationFunction, double minWeight, double weightClosestTo0, double maxWeight)
 	{
 		neurons = list<list<Neuron>>();
 		for (long i = 1; i < shapeLength; i++)
@@ -25,6 +25,8 @@ public:
 		}
 
 		ActivationFunction = activationFunction;
+		if (deleteShapeArr)
+			delete[] shape;
 	}
 
 	double* Execute(double* input)
