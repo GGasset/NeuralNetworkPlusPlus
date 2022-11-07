@@ -27,6 +27,25 @@ public:
 		ActivationFunction = activationFunction;
 	}
 
+	double* Execute(double* input)
+	{
+		tuple<double**, double**> storedExecution = ExecuteStore(input);
+		double** linears = get<0>(storedExecution);
+		double** activations = get<1>(storedExecution);
+
+		double* output = activations[GetNetworkLayerCount()];
+
+		for (size_t i = 0; i < GetNetworkLayerCount(); i++)
+		{
+			delete[] linears[i];
+			delete[] activations[i];
+		}
+		delete[] linears;
+		delete[] activations;
+
+		return output;
+	}
+
 	/// <summary>
 	/// 
 	/// </summary>
