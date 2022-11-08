@@ -17,6 +17,15 @@ public:
 		connections = NeuronConnectionsInfo(layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
 	}
 
+	Neuron(double bias, list<long> connectionsX, list<long> connectionsY, list<double> weights)
+	{
+		connections = NeuronConnectionsInfo(); 
+		connections.Bias = bias;
+		connections.Xs = connectionsX;
+		connections.Ys = connectionsY;
+		connections.Weights = weights;
+	}
+
 	Neuron() {
 
 	}
@@ -50,8 +59,8 @@ public:
 	/// <param name="linearFunction"></param>
 	/// <param name="NeuronCost"></param>
 	/// <param name="activationType"></param>
-	/// <returns>tuple(weightGradients, previousActivationGradients, biasGradient)</returns>
-	tuple<list<double>, list<double>, double> GetGradients(double** networkActivations, double linearFunction, double NeuronCost, ActivationFunctions::ActivationFunction activationType)
+	/// <returns>tuple(biasGradient, weightGradient, previousActivationGradients\)</returns>
+	tuple<double, list<double>, list<double>> GetGradients(double** networkActivations, double linearFunction, double NeuronCost, ActivationFunctions::ActivationFunction activationType)
 	{
 		double biasGradient = NeuronCost * Derivatives::DerivativeOf(linearFunction, activationType);
 		tuple<list<double>, list<double>> connectionsGradients = connections.GetGradients(biasGradient, networkActivations);
@@ -59,7 +68,7 @@ public:
 		list<double> weightGradients = get<0>(connectionsGradients);
 		list<double> previousActivationsGradients = get<1>(connectionsGradients);
 
-		tuple<list<double>, list<double>, double> output(weightGradients, previousActivationsGradients, biasGradient);
+		tuple<double, list<double>, list<double>> output(biasGradient, weightGradients, previousActivationsGradients);
 		return output;
 	}
 };
