@@ -21,7 +21,7 @@ public:
 		case ActivationFunctions::Sigmoid:
 			return SigmoidActivation(linearFunc);
 		default:
-			return 0;
+			return NULL;
 		}
 	}
 
