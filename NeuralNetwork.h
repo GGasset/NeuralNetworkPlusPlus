@@ -52,6 +52,7 @@ public:
 		return output;
 	}
 
+private:
 	/// <summary>
 	/// 
 	/// </summary>
@@ -98,6 +99,12 @@ public:
 		return layerExecutionResults;
 	}
 
+	NeuralNetwork GetLayerGradients(long layerI, list<list<Neuron>>::iterator layerIterator, double** )
+	{
+
+	}
+
+public:
 	ActivationFunctions::ActivationFunction GetActivationFunction()
 	{
 		return ActivationFunction;
