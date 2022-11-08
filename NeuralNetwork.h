@@ -99,9 +99,52 @@ private:
 		return layerExecutionResults;
 	}
 
-	NeuralNetwork GetLayerGradients(long layerI, list<list<Neuron>>::iterator layerIterator, double** neuronsGradient, double** networkLinears, double** networkActivations)
+	NeuralNetwork GetGradients(double* input)
 	{
 
+	}
+
+	NeuralNetwork GetGradients(double** networkLinears, double** networkActivations)
+	{
+
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="layerI">Takes into account input layer as index 0</param>
+	/// <param name="layerIterator"></param>
+	/// <param name="neuronsGradient"></param>
+	/// <param name="networkLinears"></param>
+	/// <param name="networkActivations"></param>
+	/// <returns></returns>
+	list<Neuron> CalculateLayerGradients(long layerI, list<list<Neuron>>::iterator layerIterator, double** neuronsGradient, double** networkLinears, double** networkActivations)
+	{
+		list<Neuron> layer = (*layerIterator);
+		list<Neuron> gradientsLayer = list<Neuron>();
+
+		auto neuronIterator = layer.begin();
+		long i = 0;
+		while (neuronIterator != layer.end())
+		{
+			Neuron neuron = (*neuronIterator);
+			tuple<double, list<double>, list<double>> gradients = neuron.GetGradients(networkActivations, networkLinears[layerI - 1][i], neuronsGradient[layerI][i], ActivationFunction);
+
+			Neuron gradientNeuron = Neuron(get<0>(gradients), list<long>(), list<long>(), get<1>(gradients));
+
+			NeuronConnectionsInfo neuronInfo = neuron.connections;
+			auto connectionsXIterator = neuronInfo.Xs.begin();
+			auto connectionsYIterator = neuronInfo.Ys.begin();
+			auto activationGradientIterator = get<2>(gradients).begin();
+			for (long j = 0; connectionsXIterator != neuronInfo.Xs.end(); j++, connectionsXIterator++, connectionsYIterator++, activationGradientIterator++)
+			{
+				neuronsGradient[*connectionsXIterator][*connectionsYIterator] -= (*activationGradientIterator);
+			}
+
+			gradientsLayer.push_back(gradientNeuron);
+			neuronIterator++;
+			i++;
+		}
 	}
 
 public:
