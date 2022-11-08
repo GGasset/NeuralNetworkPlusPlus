@@ -18,7 +18,7 @@ public:
 	{
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
-		tuple<list<long>, list<long>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI, 0, previousLayerLength);
+		tuple<list<long>, list<long>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength);
 		Xs = get<0>(connectedPositions);
 		Ys = get<1>(connectedPositions);
 		Bias = bias;
@@ -28,18 +28,24 @@ public:
 		Bias = 1;
 	}
 
-	double Execute(double** neuronsActivations)
+	double LinearFunction(double** networkActivations)
 	{
-		double output = Bias;
+		double linearFunction = Bias;
 		auto xsIterator = Xs.begin();
 		auto ysIterator = Ys.begin();
 		auto weightsIterator = Weights.begin();
 
 		for (long i = 0; weightsIterator != Weights.end(); i++, xsIterator++, ysIterator++, weightsIterator++)
 		{
-			output += neuronsActivations[*xsIterator][*ysIterator] * *weightsIterator;
+			long x, y;
+			x = *xsIterator;
+			y = *ysIterator;
+			double weight = *weightsIterator;
+			double currentActivation = networkActivations[x][y];
+			double currentMultiplicationValue = currentActivation * weight;
+			linearFunction += currentMultiplicationValue;
 		}
-		return output;
+		return linearFunction;
 	}
 
 	/// <summary>

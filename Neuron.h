@@ -34,14 +34,15 @@ public:
 	/// <param name="networkActivations"></param>
 	/// <param name="activationType"></param>
 	/// <returns>tuple(linear function, neuron activation)</returns>
-	tuple<double, double> ExecuteStore(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
+	tuple<double, double> ExecuteStore(double** networkActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		double linearFunction;
-		double activation = ActivationFunctions::Activate(linearFunction = connections.Execute(neuronActivations), activationType);
+		double linearFunction = connections.LinearFunction(networkActivations);
+		double activation = ActivationFunctions::Activate(linearFunction, activationType);
 
 		tuple<double, double> output(linearFunction, activation);
 		return output;
 	}
+
 
 	/// <summary>
 	/// 

@@ -1,11 +1,20 @@
 // NeuralNetwork++.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+using namespace std;
 #include <iostream>
-#include "ValueGeneration.h"
+#include "NeuralNetwork.h"
+#include "ActivationFunctions.h"
 
 int main()
 {
+	long shape[] = { 1, 1, 1};
+	NeuralNetwork n = NeuralNetwork(3, shape, false, 1, ActivationFunctions::Sigmoid, -.5, 0, .5);
+	double* input = new double[1];
+	input[0] = 3.5;
+	double* output = n.Execute(input);
+	std::cout << output[0] << "\n";
+	delete[] output;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
