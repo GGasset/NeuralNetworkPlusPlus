@@ -2,6 +2,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include "ActivationFunctions.h"
+#include "Cost.h"
 
 #pragma once
 class Derivatives
@@ -16,7 +17,18 @@ public:
 		case ActivationFunctions::Sigmoid:
 			return SigmoidDerivative(linearFunction);
 		default:
-			return 0;
+			return NULL;
+		}
+	}
+
+	static double* DerivativeOf(long networkOutputLength, double* networkOutput, double* Y, Cost::CostFunction costFunction)
+	{
+		switch (costFunction)
+		{
+		case Cost::SquaredMean:
+			return SquaredMeanDerivative(networkOutputLength, networkOutput, Y);
+		default:
+			return NULL;
 		}
 	}
 
