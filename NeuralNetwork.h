@@ -99,7 +99,7 @@ private:
 		return layerExecutionResults;
 	}
 
-	NeuralNetwork GetLayerGradients(long layerI, list<list<Neuron>>::iterator layerIterator, double** )
+	NeuralNetwork GetLayerGradients(long layerI, list<list<Neuron>>::iterator layerIterator, double** neuronsGradient, double** networkLinears, double** networkActivations)
 	{
 
 	}
