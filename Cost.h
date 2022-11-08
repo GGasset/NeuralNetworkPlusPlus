@@ -16,7 +16,7 @@ public:
 		case Cost::SquaredMean:
 			return SquaredMeanLoss(networkOutputLength, neuronOutput, Y);
 		default:
-			return 0;
+			return NULL;
 		}
 	}
 
