@@ -9,7 +9,7 @@ using namespace std;
 int main()
 {
 	long shape[] = { 1, 1, 1};
-	NeuralNetwork n = NeuralNetwork(3, shape, false, 1, ActivationFunctions::Sigmoid, -.5, 0, .5);
+	NeuralNetwork n = NeuralNetwork(3, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
 	double* input = new double[1];
 	input[0] = 3.5;
 	double* output = n.Execute(input);
