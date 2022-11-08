@@ -36,6 +36,9 @@
     <ClCompile Include="Derivatives.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Cost.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Neuron.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Derivatives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

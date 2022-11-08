@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ActivationFunctions.cpp" />
+    <ClCompile Include="Cost.cpp" />
     <ClCompile Include="Derivatives.cpp" />
     <ClCompile Include="NeuralNetwork++.cpp" />
     <ClCompile Include="Neuron.cpp" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActivationFunctions.h" />
+    <ClInclude Include="Cost.h" />
     <ClInclude Include="Derivatives.h" />
     <ClInclude Include="Neuron.h" />
     <ClInclude Include="NeuralNetwork.h" />
