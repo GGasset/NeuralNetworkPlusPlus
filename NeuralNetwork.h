@@ -62,7 +62,7 @@ public:
 		return output;
 	}
 
-private:
+public:
 	/// <summary>
 	/// 
 	/// </summary>
@@ -129,6 +129,8 @@ private:
 
 		delete[] networkLinears;
 		delete[] networkActivations;
+
+		return gradients;
 	}
 
 	NeuralNetwork GetGradients(double** networkLinears, double** networkActivations, double* costGradients)
@@ -155,6 +157,7 @@ private:
 		} while (layerIterator != Neurons.begin());
 
 		NeuralNetwork gradientsNetwork = NeuralNetwork(gradientLayers, ActivationFunction, OutputLength);
+		return gradientsNetwork;
 	}
 
 	/// <summary>
