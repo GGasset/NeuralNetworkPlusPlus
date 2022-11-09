@@ -10,11 +10,11 @@ public:
 	list<long> Xs;
 	list<long> Ys;
 
-	list<double> Weights;
+	list<float> Weights;
 
-	double Bias;
+	float Bias;
 
-	NeuronConnectionsInfo(long layerI, long previousLayerLength, double bias, double minWeight, double weightClosestTo0, double maxWeight)
+	NeuronConnectionsInfo(long layerI, long previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
@@ -28,9 +28,9 @@ public:
 		Bias = 1;
 	}
 
-	double LinearFunction(double** networkActivations)
+	float LinearFunction(float** networkActivations)
 	{
-		double linearFunction = Bias;
+		float linearFunction = Bias;
 		auto xsIterator = Xs.begin();
 		auto ysIterator = Ys.begin();
 		auto weightsIterator = Weights.begin();
@@ -40,10 +40,8 @@ public:
 			long x, y;
 			x = *xsIterator;
 			y = *ysIterator;
-			double weight = *weightsIterator;
-			double currentActivation = networkActivations[x][y];
-			double currentMultiplicationValue = currentActivation * weight;
-			linearFunction += currentMultiplicationValue;
+			float currentActivation = networkActivations[x][y];
+			linearFunction += currentActivation * (*weightsIterator);
 		}
 		return linearFunction;
 	}
@@ -54,11 +52,11 @@ public:
 	/// <param name="activationGradient"></param>
 	/// <param name="networkActivations"></param>
 	/// <returns>tuple(weightGradients, previousActivationGradients)</returns>
-	tuple<list<double>, list<double>> GetGradients(double activationGradient, double** networkActivations)
+	tuple<list<float>, list<float>> GetGradients(float activationGradient, float** networkActivations)
 	{
-		list<double> weightGradients, previousActivationsGradients;
-		weightGradients = list<double>();
-		previousActivationsGradients = list<double>();
+		list<float> weightGradients, previousActivationsGradients;
+		weightGradients = list<float>();
+		previousActivationsGradients = list<float>();
 		auto xsIterator = Xs.begin();
 		auto ysIterator = Ys.begin();
 		auto weightsIterator = Weights.begin();
@@ -69,11 +67,11 @@ public:
 			previousActivationsGradients.push_back(activationGradient * *weightsIterator);
 		}
 
-		tuple<list<double>, list<double>> output(weightGradients, previousActivationsGradients);
+		tuple<list<float>, list<float>> output(weightGradients, previousActivationsGradients);
 		return output;
 	}
 
-	void ApplyGradients(NeuronConnectionsInfo gradients, double learningRate)
+	void ApplyGradients(NeuronConnectionsInfo gradients, float learningRate)
 	{
 		auto weightIterator = Weights.begin();
 		auto gWeightIterator = gradients.Weights.begin();

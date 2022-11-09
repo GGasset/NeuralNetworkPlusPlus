@@ -9,7 +9,7 @@ public:
 		SquaredMean,
 	};
 
-	static double GetCostOf(long networkOutputLength, double* neuronOutput, double* Y, CostFunction costType)
+	static float GetCostOf(long networkOutputLength, float* neuronOutput, float* Y, CostFunction costType)
 	{
 		switch (costType)
 		{
@@ -20,16 +20,16 @@ public:
 		}
 	}
 
-	static double SquaredMeanLoss(long outputLength, double* neuronOutput, double* Y)
+	static float SquaredMeanLoss(long outputLength, float* neuronOutput, float* Y)
 	{
-		double mean = 0;
+		float mean = 0;
 		for (long i = 0; i < outputLength; i++)
 		{
 			mean += SquaredMeanLoss(neuronOutput[i], Y[i]);
 		}
 	}
 
-	static double SquaredMeanLoss(double neuronOutput, double Y)
+	static double SquaredMeanLoss(float neuronOutput, float Y)
 	{
 		return pow(neuronOutput - Y, 2);
 	}

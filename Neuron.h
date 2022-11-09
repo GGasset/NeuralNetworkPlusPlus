@@ -12,12 +12,12 @@ class Neuron
 public:
 	NeuronConnectionsInfo connections;
 
-	Neuron(int layerI, int previousLayerLength, double bias, double minWeight, double weightClosestTo0, double maxWeight)
+	Neuron(int layerI, int previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		connections = NeuronConnectionsInfo(layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
 	}
 
-	Neuron(double bias, list<long> connectionsX, list<long> connectionsY, list<double> weights)
+	Neuron(float bias, list<long> connectionsX, list<long> connectionsY, list<float> weights)
 	{
 		connections = NeuronConnectionsInfo(); 
 		connections.Bias = bias;
@@ -30,9 +30,9 @@ public:
 
 	}
 
-	double Execute(double** neuronActivations, ActivationFunctions::ActivationFunction activationType)
+	double Execute(float** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		tuple<double,double> linearAndActivation = ExecuteStore(neuronActivations, activationType);
+		tuple<float,float> linearAndActivation = ExecuteStore(neuronActivations, activationType);
 		double output = get<0>(linearAndActivation);
 		return output;
 	}
@@ -43,12 +43,12 @@ public:
 	/// <param name="networkActivations"></param>
 	/// <param name="activationType"></param>
 	/// <returns>tuple(linear function, neuron activation)</returns>
-	tuple<double, double> ExecuteStore(double** networkActivations, ActivationFunctions::ActivationFunction activationType)
+	tuple<float, float> ExecuteStore(float** networkActivations, ActivationFunctions::ActivationFunction activationType)
 	{
-		double linearFunction = connections.LinearFunction(networkActivations);
-		double activation = ActivationFunctions::Activate(linearFunction, activationType);
+		float linearFunction = connections.LinearFunction(networkActivations);
+		float activation = ActivationFunctions::Activate(linearFunction, activationType);
 
-		tuple<double, double> output(linearFunction, activation);
+		tuple<float, float> output(linearFunction, activation);
 		return output;
 	}
 
@@ -60,19 +60,19 @@ public:
 	/// <param name="NeuronCost"></param>
 	/// <param name="activationType"></param>
 	/// <returns>tuple(biasGradient, weightGradient, previousActivationGradients\)</returns>
-	tuple<double, list<double>, list<double>> GetGradients(double** networkActivations, double linearFunction, double NeuronCost, ActivationFunctions::ActivationFunction activationType)
+	tuple<float, list<float>, list<float>> GetGradients(float** networkActivations, float linearFunction, float NeuronCost, ActivationFunctions::ActivationFunction activationType)
 	{
-		double biasGradient = NeuronCost * Derivatives::DerivativeOf(linearFunction, activationType);
-		tuple<list<double>, list<double>> connectionsGradients = connections.GetGradients(biasGradient, networkActivations);
+		float biasGradient = NeuronCost * Derivatives::DerivativeOf(linearFunction, activationType);
+		tuple<list<float>, list<float>> connectionsGradients = connections.GetGradients(biasGradient, networkActivations);
 
-		list<double> weightGradients = get<0>(connectionsGradients);
-		list<double> previousActivationsGradients = get<1>(connectionsGradients);
+		list<float> weightGradients = get<0>(connectionsGradients);
+		list<float> previousActivationsGradients = get<1>(connectionsGradients);
 
-		tuple<double, list<double>, list<double>> output(biasGradient, weightGradients, previousActivationsGradients);
+		tuple<float, list<float>, list<float>> output(biasGradient, weightGradients, previousActivationsGradients);
 		return output;
 	}
 
-	void ApplyGradients(Neuron gradients, double learningRate)
+	void ApplyGradients(Neuron gradients, float learningRate)
 	{
 		connections.ApplyGradients(gradients.connections, learningRate);
 	}

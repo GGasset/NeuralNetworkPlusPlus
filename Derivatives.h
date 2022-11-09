@@ -8,7 +8,7 @@
 class Derivatives
 {
 public:
-	static double DerivativeOf(double linearFunction, ActivationFunctions::ActivationFunction ActivationType)
+	static float DerivativeOf(float linearFunction, ActivationFunctions::ActivationFunction ActivationType)
 	{
 		switch (ActivationType)
 		{
@@ -21,7 +21,7 @@ public:
 		}
 	}
 
-	static double* DerivativeOf(long networkOutputLength, double* networkOutput, double* Y, Cost::CostFunction costFunction)
+	static float* DerivativeOf(long networkOutputLength, float* networkOutput, float* Y, Cost::CostFunction costFunction)
 	{
 		switch (costFunction)
 		{
@@ -33,20 +33,20 @@ public:
 	}
 
 	// Activation function derivatives
-	static double RELUDerivative(double linearFunction)
+	static float RELUDerivative(float linearFunction)
 	{
 		return linearFunction * (linearFunction >= 0);
 	}
 
-	static double SigmoidDerivative(double linearFunction)
+	static float SigmoidDerivative(float linearFunction)
 	{
 		return ActivationFunctions::SigmoidActivation(linearFunction) * (1 - ActivationFunctions::SigmoidActivation(linearFunction));
 	}
 
 	//Cost derivatives
-	static double* SquaredMeanDerivative(long networkOutputLength, double* networkOutput, double* Y)
+	static float* SquaredMeanDerivative(long networkOutputLength, float* networkOutput, float* Y)
 	{
-		double* output = new double[networkOutputLength];
+		float* output = new float[networkOutputLength];
 		for (long i = 0; i < networkOutputLength; i++)
 		{
 			output[i] = SquaredMeanDerivative(networkOutput[i], Y[i]);
@@ -54,7 +54,7 @@ public:
 		return output;
 	}
 
-	static double SquaredMeanDerivative(double neuronOutput, double Y)
+	static float SquaredMeanDerivative(float neuronOutput, float Y)
 	{
 		return 2 * (neuronOutput - Y);
 	}

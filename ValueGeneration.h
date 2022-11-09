@@ -9,10 +9,10 @@ class ValueGeneration
 {
 
 public:
-	static double GenerateWeight(double minValue, double valueClosestTo0, double maxValue)
+	static float GenerateWeight(double minValue, double valueClosestTo0, double maxValue)
 	{
-		double maxValueCp = maxValue;
-		double minValueCp = minValue;
+		float maxValueCp = maxValue;
+		float minValueCp = minValue;
 		maxValue = fmax(minValueCp, maxValueCp);
 		minValue = fmin(minValueCp, maxValueCp);
 
@@ -21,7 +21,7 @@ public:
 		bool areMinAndMaxValuesPositive = minValue >= 0 && maxValue >= 0;
 		bool areMinAndMaxValuesNegative = minValue <= 0 && maxValue <= 0;
 
-		double output = 0;
+		float output = 0;
 
 		// output multiplier will determine if output is positive or negative only if maxValue is positive and minValue is negative
 		int outputMultiplier = rand() % 2;
@@ -47,9 +47,9 @@ public:
 		return output;
 	}
 
-	static list<double> GenerateWeigths(long outputLength, double minValue, double valueClosestTo0, double maxValue)
+	static list<float> GenerateWeigths(long outputLength, double minValue, double valueClosestTo0, double maxValue)
 	{
-		list<double> output = list<double>();
+		list<float> output = list<float>();
 		for (long i = 0; i < outputLength; i++)
 		{
 			output.push_front(GenerateWeight(minValue, valueClosestTo0, maxValue));
@@ -73,7 +73,7 @@ public:
 		return output;
 	}
 
-	static double NextDouble()
+	static float NextDouble()
 	{
 		return (rand() % 1000) / 1000.0;
 	}
