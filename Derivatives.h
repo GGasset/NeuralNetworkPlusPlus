@@ -21,7 +21,7 @@ public:
 		}
 	}
 
-	static float* DerivativeOf(long networkOutputLength, float* networkOutput, float* Y, Cost::CostFunction costFunction)
+	static float* DerivativeOf(size_t networkOutputLength, float* networkOutput, float* Y, Cost::CostFunction costFunction)
 	{
 		switch (costFunction)
 		{
@@ -44,10 +44,10 @@ public:
 	}
 
 	//Cost derivatives
-	static float* SquaredMeanDerivative(long networkOutputLength, float* networkOutput, float* Y)
+	static float* SquaredMeanDerivative(size_t networkOutputLength, float* networkOutput, float* Y)
 	{
 		float* output = new float[networkOutputLength];
-		for (long i = 0; i < networkOutputLength; i++)
+		for (size_t i = 0; i < networkOutputLength; i++)
 		{
 			output[i] = SquaredMeanDerivative(networkOutput[i], Y[i]);
 		}

@@ -7,18 +7,18 @@ using namespace std;
 class NeuronConnectionsInfo
 {
 public:
-	list<long> Xs;
-	list<long> Ys;
+	list<size_t> Xs;
+	list<size_t> Ys;
 
 	list<float> Weights;
 
 	float Bias;
 
-	NeuronConnectionsInfo(long layerI, long previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
+	NeuronConnectionsInfo(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
-		tuple<list<long>, list<long>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength);
+		tuple<list<size_t>, list<size_t>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength);
 		Xs = get<0>(connectedPositions);
 		Ys = get<1>(connectedPositions);
 		Bias = bias;
@@ -35,9 +35,9 @@ public:
 		auto ysIterator = Ys.begin();
 		auto weightsIterator = Weights.begin();
 
-		for (long i = 0; weightsIterator != Weights.end(); i++, xsIterator++, ysIterator++, weightsIterator++)
+		for (size_t i = 0; weightsIterator != Weights.end(); i++, xsIterator++, ysIterator++, weightsIterator++)
 		{
-			long x, y;
+			size_t x, y;
 			x = *xsIterator;
 			y = *ysIterator;
 			float currentActivation = networkActivations[x][y];
@@ -76,13 +76,13 @@ public:
 		auto weightIterator = Weights.begin();
 		auto gWeightIterator = gradients.Weights.begin();
 
-		for (long i = 0; weightIterator != Weights.end(); i++, weightIterator++, gWeightIterator++)
+		for (size_t i = 0; weightIterator != Weights.end(); i++, weightIterator++, gWeightIterator++)
 		{
 			(*weightIterator) -= (*gWeightIterator) * learningRate;
 		}
 	}
 
-	long GetConnectionCount()
+	size_t GetConnectionCount()
 	{
 		return Weights.size();
 	}

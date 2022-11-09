@@ -17,7 +17,7 @@ public:
 		connections = NeuronConnectionsInfo(layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
 	}
 
-	Neuron(float bias, list<long> connectionsX, list<long> connectionsY, list<float> weights)
+	Neuron(float bias, list<size_t> connectionsX, list<size_t> connectionsY, list<float> weights)
 	{
 		connections = NeuronConnectionsInfo(); 
 		connections.Bias = bias;
@@ -30,10 +30,10 @@ public:
 
 	}
 
-	double Execute(float** neuronActivations, ActivationFunctions::ActivationFunction activationType)
+	float Execute(float** neuronActivations, ActivationFunctions::ActivationFunction activationType)
 	{
 		tuple<float,float> linearAndActivation = ExecuteStore(neuronActivations, activationType);
-		double output = get<0>(linearAndActivation);
+		float output = get<0>(linearAndActivation);
 		return output;
 	}
 

@@ -47,29 +47,29 @@ public:
 		return output;
 	}
 
-	static list<float> GenerateWeigths(long outputLength, double minValue, double valueClosestTo0, double maxValue)
+	static list<float> GenerateWeigths(size_t outputLength, float minValue, float valueClosestTo0, float maxValue)
 	{
 		list<float> output = list<float>();
-		for (long i = 0; i < outputLength; i++)
+		for (size_t i = 0; i < outputLength; i++)
 		{
 			output.push_front(GenerateWeight(minValue, valueClosestTo0, maxValue));
 		}
 		return output;
 	}
 
-	static tuple<list<long>, list<long>> GenerateConnectedPositions(long x, long startingY, long outputLength)
+	static tuple<list<size_t>, list<size_t>> GenerateConnectedPositions(size_t x, size_t startingY, size_t outputLength)
 	{
-		list<long> Xs, Ys;
-		Xs = list<long>();
-		Ys = list<long>();
+		list<size_t> Xs, Ys;
+		Xs = list<size_t>();
+		Ys = list<size_t>();
 
-		for (long i = 0; i < outputLength; i++)
+		for (size_t i = 0; i < outputLength; i++)
 		{
 			Xs.push_back(x);
 			Ys.push_back(startingY + i);
 		}
 
-		tuple<list<long>, list<long>> output(Xs, Ys);
+		tuple<list<size_t>, list<size_t>> output(Xs, Ys);
 		return output;
 	}
 

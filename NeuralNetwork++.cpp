@@ -9,16 +9,16 @@ using namespace std;
 int main()
 {
 	int length = 124 * 124;
-	long shape[] = { 1, length, 5000, 500, 5000, length, 1};
+	size_t shape[] = { 1, length, 5000, 500, 5000, length, 1};
 	NeuralNetwork n = NeuralNetwork(3, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
 
-	double* X = new double[1];
+	float* X = new float[1];
 	X[0] = 3.5;
 	
-	double* Y = new double[1];
+	float* Y = new float[1];
 	Y[0] = .54321;
 
-	double* output = n.Execute(X);
+	float* output = n.Execute(X);
 	std::cout << output[0] << "\n";
 	delete[] output;
 

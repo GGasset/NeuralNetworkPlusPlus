@@ -12,7 +12,7 @@ public:
 		Sigmoid,
 	};
 
-	static float Activate(double linearFunc, ActivationFunction activationType)
+	static float Activate(float linearFunc, ActivationFunction activationType)
 	{
 		switch (activationType)
 		{
@@ -25,12 +25,12 @@ public:
 		}
 	}
 
-	static float RELUActivation(double linearFunc)
+	static float RELUActivation(float linearFunc)
 	{
 		return fmax(0, linearFunc);
 	}
 
-	static float SigmoidActivation(double linearFunc)
+	static float SigmoidActivation(float linearFunc)
 	{
 		return 1 / (1 + exp(-linearFunc));
 	}

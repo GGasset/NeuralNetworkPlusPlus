@@ -13,13 +13,13 @@ private:
 	int OutputLength;
 
 public:
-	NeuralNetwork(long shapeLength, long shape[], bool deleteShapeArr, ActivationFunctions::ActivationFunction activationFunction, float bias, float minWeight, float weightClosestTo0, float maxWeight)
+	NeuralNetwork(size_t shapeLength, size_t shape[], bool deleteShapeArr, ActivationFunctions::ActivationFunction activationFunction, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		Neurons = list<list<Neuron>>();
-		for (long i = 1; i < shapeLength; i++)
+		for (size_t i = 1; i < shapeLength; i++)
 		{
 			list<Neuron> currentLayer = list<Neuron>();
-			for (long j = 0; j < shape[i]; j++)
+			for (size_t j = 0; j < shape[i]; j++)
 			{
 				currentLayer.push_back(Neuron(i, shape[i - 1], bias, minWeight, weightClosestTo0, maxWeight));
 			}
@@ -74,7 +74,7 @@ public:
 		float** networkActivations = new float* [GetNetworkLayerCount() + 1];
 		networkActivations[0] = input;
 		auto layerIter = Neurons.begin();
-		for (long i = 0; i < GetNetworkLayerCount(); i++, layerIter++)
+		for (size_t i = 0; i < GetNetworkLayerCount(); i++, layerIter++)
 		{
 			tuple<float*, float*> layerExecutionResults = ExecuteStoreLayer(layerIter, networkActivations);
 			networkLinearFunctions[i] = get<0>(layerExecutionResults);
@@ -94,12 +94,12 @@ public:
 	tuple<float*, float*> ExecuteStoreLayer(list<list<Neuron>>::iterator layerIter, float** networkActivations)
 	{
 		list<Neuron> layer = (*layerIter);
-		long layerLength = layer.size();
+		size_t layerLength = layer.size();
 		float* layerLinears = new float[layerLength];
 		float* layerActivations = new float[layerLength];
 
 		auto neuronIter = layer.begin();
-		for (long i = 0; neuronIter != layer.end(); i++, neuronIter++)
+		for (size_t i = 0; neuronIter != layer.end(); i++, neuronIter++)
 		{
 			tuple<float, float> neuronExecutionResults = (*neuronIter).ExecuteStore(networkActivations, ActivationFunction);
 			layerLinears[i] = get<0>(neuronExecutionResults);
@@ -120,7 +120,7 @@ public:
 		NeuralNetwork gradients = GetGradients(networkLinears, networkActivations, cost);
 
 		delete[] networkLinears[0];
-		for (long i = 1; i < GetNetworkLayerCount(); i++)
+		for (size_t i = 1; i < GetNetworkLayerCount(); i++)
 		{
 			delete[] networkLinears[i];
 			delete[] networkActivations[i];
@@ -139,12 +139,12 @@ public:
 		float** neuronCosts = new float* [GetNetworkLayerCount() + 1];
 
 		neuronCosts[GetNetworkLayerCount()] = costGradients;
-		for (long i = 0; i < GetNetworkLayerCount(); i++)
+		for (size_t i = 0; i < GetNetworkLayerCount(); i++)
 		{
 			neuronCosts[i] = new float[(*layerIterator).size()];
 		}
 
-		long layerI = GetNetworkLayerCount();
+		size_t layerI = GetNetworkLayerCount();
 		list<list<Neuron>> gradientLayers = list<list<Neuron>>();
 		layerIterator = Neurons.end();
 		do
@@ -169,13 +169,13 @@ public:
 	/// <param name="networkLinears"></param>
 	/// <param name="networkActivations"></param>
 	/// <returns></returns>
-	list<Neuron> CalculateLayerGradients(long layerI, list<list<Neuron>>::iterator layerIterator, float** neuronsGradient, float** networkLinears, float** networkActivations)
+	list<Neuron> CalculateLayerGradients(size_t layerI, list<list<Neuron>>::iterator layerIterator, float** neuronsGradient, float** networkLinears, float** networkActivations)
 	{
 		list<Neuron> layer = (*layerIterator);
 		list<Neuron> gradientsLayer = list<Neuron>();
 
 		auto neuronIterator = layer.begin();
-		long i = 0;
+		size_t i = 0;
 		while (neuronIterator != layer.end())
 		{
 			float linearFunction = networkLinears[layerI - 1][i];
@@ -184,13 +184,13 @@ public:
 			Neuron neuron = (*neuronIterator);
 			tuple<float, list<float>, list<float>> gradients = neuron.GetGradients(networkActivations, linearFunction, activation, ActivationFunction);
 
-			Neuron gradientNeuron = Neuron(get<0>(gradients), list<long>(), list<long>(), get<1>(gradients));
+			Neuron gradientNeuron = Neuron(get<0>(gradients), list<size_t>(), list<size_t>(), get<1>(gradients));
 
 			NeuronConnectionsInfo neuronInfo = neuron.connections;
 			auto connectionsXIterator = neuronInfo.Xs.begin();
 			auto connectionsYIterator = neuronInfo.Ys.begin();
 			auto activationGradientIterator = get<2>(gradients).begin();
-			for (long j = 0; connectionsXIterator != neuronInfo.Xs.end(); j++, connectionsXIterator++, connectionsYIterator++, activationGradientIterator++)
+			for (size_t j = 0; connectionsXIterator != neuronInfo.Xs.end(); j++, connectionsXIterator++, connectionsYIterator++, activationGradientIterator++)
 			{
 				neuronsGradient[*connectionsXIterator][*connectionsYIterator] -= (*activationGradientIterator);
 			}
@@ -227,14 +227,14 @@ public:
 	/// Output includes input layer
 	/// </summary>
 	/// <returns></returns>
-	list<long> GetNetworkShape()
+	list<size_t> GetNetworkShape()
 	{
-		long networkLength = GetNetworkLayerCount();
-		list<long> shape = list<long>();
+		size_t networkLength = GetNetworkLayerCount();
+		list<size_t> shape = list<size_t>();
 		shape.push_back(GetNetworkInputLength());
 
 		auto layerIterator = Neurons.begin();
-		for (long i = 0; layerIterator != Neurons.end(); i++, layerIterator++)
+		for (size_t i = 0; layerIterator != Neurons.end(); i++, layerIterator++)
 		{
 			shape.push_back((*layerIterator).size());
 		}
@@ -245,19 +245,19 @@ public:
 	/// Output doesn't include input layer
 	/// </summary>
 	/// <returns></returns>
-	long GetNetworkLayerCount()
+	size_t GetNetworkLayerCount()
 	{
 		return Neurons.size();
 	}
 
-	long GetNetworkInputLength()
+	size_t GetNetworkInputLength()
 	{
 		auto layerIterator = Neurons.begin();
 		auto neuronIterator = (*layerIterator).begin();
 		return (*neuronIterator).connections.GetConnectionCount();
 	}
 
-	long GetNetworkOutputLength()
+	size_t GetNetworkOutputLength()
 	{
 		return OutputLength;
 	}
