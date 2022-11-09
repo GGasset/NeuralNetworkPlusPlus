@@ -144,7 +144,7 @@ public:
 			neuronCosts[i] = new double[(*layerIterator).size()];
 		}
 
-		long layerI = GetNetworkLayerCount() + 1;
+		long layerI = GetNetworkLayerCount();
 		list<list<Neuron>> gradientLayers = list<list<Neuron>>();
 		layerIterator = Neurons.end();
 		do
@@ -178,8 +178,11 @@ public:
 		long i = 0;
 		while (neuronIterator != layer.end())
 		{
+			double linearFunction = networkLinears[layerI - 1][i];
+			double activation = neuronsGradient[layerI][i];
+
 			Neuron neuron = (*neuronIterator);
-			tuple<double, list<double>, list<double>> gradients = neuron.GetGradients(networkActivations, networkLinears[layerI - 1][i], neuronsGradient[layerI][i], ActivationFunction);
+			tuple<double, list<double>, list<double>> gradients = neuron.GetGradients(networkActivations, linearFunction, activation, ActivationFunction);
 
 			Neuron gradientNeuron = Neuron(get<0>(gradients), list<long>(), list<long>(), get<1>(gradients));
 
