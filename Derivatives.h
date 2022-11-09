@@ -40,9 +40,10 @@ public:
 
 	static double SigmoidDerivative(double linearFunction)
 	{
-		return ((-linearFunction - 1) * exp(-linearFunction - 1)) / pow(1 + exp(linearFunction), 2);
+		return ActivationFunctions::SigmoidActivation(linearFunction) * (1 - ActivationFunctions::SigmoidActivation(linearFunction));
 	}
 
+	//Cost derivatives
 	static double* SquaredMeanDerivative(long networkOutputLength, double* networkOutput, double* Y)
 	{
 		double* output = new double[networkOutputLength];
@@ -53,7 +54,6 @@ public:
 		return output;
 	}
 
-	//Cost derivatives
 	static double SquaredMeanDerivative(double neuronOutput, double Y)
 	{
 		return 2 * (neuronOutput - Y);
