@@ -196,6 +196,21 @@ private:
 	}
 
 public:
+	void ApplyGradients(NeuralNetwork gradients)
+	{
+		auto layerIterator = Neurons.begin();
+		auto gLayerIterator = gradients.Neurons.begin();
+		for (size_t i = 0; layerIterator != Neurons.end(); i++, layerIterator++, gLayerIterator++)
+		{
+			auto neuronIterator = (*layerIterator).begin();
+			auto gNeuronIterator = (*gLayerIterator).begin();
+			for (size_t i = 0; neuronIterator != (*layerIterator).end(); i++, neuronIterator++, gNeuronIterator++)
+			{
+				(*neuronIterator).ApplyGradients((*gNeuronIterator));
+			}
+		}
+	}
+
 	ActivationFunctions::ActivationFunction GetActivationFunction()
 	{
 		return ActivationFunction;
