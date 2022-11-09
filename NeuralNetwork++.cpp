@@ -4,17 +4,32 @@
 using namespace std;
 #include <iostream>
 #include "NeuralNetwork.h"
-#include "ActivationFunctions.h"
+#include "Cost.h"
 
 int main()
 {
-	long shape[] = { 1, 1, 1};
+	int length = 124 * 124;
+	long shape[] = { 1, length, 5000, 500, 5000, length, 1};
 	NeuralNetwork n = NeuralNetwork(3, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
-	double* input = new double[1];
-	input[0] = 3.5;
-	double* output = n.Execute(input);
+
+	double* X = new double[1];
+	X[0] = 3.5;
+	
+	double* Y = new double[1];
+	Y[0] = .54321;
+
+	double* output = n.Execute(X);
 	std::cout << output[0] << "\n";
 	delete[] output;
+
+	for (size_t i = 0; i < 5000; i++)
+	{
+		n.ApplyGradients(n.GetGradients(X, Y, Cost::SquaredMean), .1);
+		output = n.Execute(X);
+		std::cout << output[0] << "\n";
+
+		delete[] output;
+	}
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
