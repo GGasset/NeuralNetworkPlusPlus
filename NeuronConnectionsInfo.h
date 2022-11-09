@@ -73,7 +73,18 @@ public:
 		return output;
 	}
 
-	int GetConnectionCount()
+	void ApplyGradients(NeuronConnectionsInfo gradients)
+	{
+		auto weightIterator = Weights.begin();
+		auto gWeightIterator = gradients.Weights.begin();
+
+		for (long i = 0; weightIterator != Weights.end(); i++, weightIterator++, gWeightIterator++)
+		{
+			(*weightIterator) -= (*gWeightIterator);
+		}
+	}
+
+	long GetConnectionCount()
 	{
 		return Weights.size();
 	}
