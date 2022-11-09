@@ -1,4 +1,5 @@
 using namespace std;
+#include "Cost.h";
 #include "Neuron.h"
 #include <list>
 #include <tuple>
@@ -108,14 +109,52 @@ private:
 		return layerExecutionResults;
 	}
 
-	NeuralNetwork GetGradients(double* input)
+	NeuralNetwork GetGradients(double* X, double* Y, Cost::CostFunction costFunction)
 	{
+		tuple<double**, double**> executionResults = ExecuteStore(X);
+		double** networkLinears, **networkActivations;
+		networkLinears = get<0>(executionResults);
+		networkActivations = get<1>(executionResults);
 
+		double* cost = Derivatives::DerivativeOf(GetNetworkOutputLength(), get<1>(executionResults)[GetNetworkLayerCount()], Y, costFunction);
+		NeuralNetwork gradients = GetGradients(networkLinears, networkActivations, cost);
+
+		delete[] networkLinears[0];
+		for (long i = 1; i < GetNetworkLayerCount(); i++)
+		{
+			delete[] networkLinears[i];
+			delete[] networkActivations[i];
+		}
+		delete[] networkActivations[GetNetworkLayerCount()];
+
+		delete[] networkLinears;
+		delete[] networkActivations;
 	}
 
-	NeuralNetwork GetGradients(double** networkLinears, double** networkActivations)
+	NeuralNetwork GetGradients(double** networkLinears, double** networkActivations, double* costGradients)
 	{
+		auto layerIterator = Neurons.begin();
+		double** neuronCosts = new double* [GetNetworkLayerCount() + 1];
 
+		neuronCosts[GetNetworkLayerCount()] = costGradients;
+		for (long i = 0; i < GetNetworkLayerCount(); i++)
+		{
+			neuronCosts[i] = new double[(*layerIterator).size()];
+		}
+
+		long layerI = GetNetworkLayerCount() + 1;
+		list<list<Neuron>> gradientLayers = list<list<Neuron>>();
+		layerIterator = Neurons.end();
+		do
+		{
+			layerIterator--;
+
+			gradientLayers.push_front(CalculateLayerGradients(layerI, layerIterator, neuronCosts, networkLinears, networkActivations));
+
+			layerI--;
+		} while (layerIterator != Neurons.begin());
+
+		NeuralNetwork gradientsNetwork = NeuralNetwork(gradientLayers, ActivationFunction, OutputLength);
 	}
 
 	/// <summary>
