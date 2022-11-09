@@ -9,14 +9,14 @@ class ValueGeneration
 {
 
 public:
-	static float GenerateWeight(double minValue, double valueClosestTo0, double maxValue)
+	static float GenerateWeight(float minValue, float valueClosestTo0, float maxValue)
 	{
 		float maxValueCp = maxValue;
 		float minValueCp = minValue;
-		maxValue = fmax(minValueCp, maxValueCp);
-		minValue = fmin(minValueCp, maxValueCp);
+		maxValue = fmaxf(minValueCp, maxValueCp);
+		minValue = fminf(minValueCp, maxValueCp);
 
-		valueClosestTo0 = fabs(valueClosestTo0);
+		valueClosestTo0 = fabsf(valueClosestTo0);
 		bool isMaxValuePositiveAndMinValueNegative = maxValue > 0 && minValue < 0;
 		bool areMinAndMaxValuesPositive = minValue >= 0 && maxValue >= 0;
 		bool areMinAndMaxValuesNegative = minValue <= 0 && maxValue <= 0;
@@ -34,7 +34,7 @@ public:
 		output += minValue * areMinAndMaxValuesPositive;
 		output += maxValue * areMinAndMaxValuesNegative;
 
-		double outputAdditionMultiplier = NextDouble();
+		float outputAdditionMultiplier = NextDouble();
 
 		// Set output to its final value if min value is negative and max value positive
 		output += (outputAdditionMultiplier * (maxValue - valueClosestTo0)) * (isMaxValuePositiveAndMinValueNegative && outputMultiplier == 1);
@@ -75,7 +75,7 @@ public:
 
 	static float NextDouble()
 	{
-		return (rand() % 1000) / 1000.0;
+		return (rand() % 1000) / 1000.0F;
 	}
 };
 
