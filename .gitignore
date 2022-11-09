@@ -32,3 +32,4 @@
 *.app
 /.vs/NeuralNetwork++
 /Debug
+/x64/Debug
