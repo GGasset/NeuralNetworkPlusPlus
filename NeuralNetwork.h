@@ -32,6 +32,13 @@ public:
 			delete[] shape;
 	}
 
+	NeuralNetwork(list<list<Neuron>> neurons, ActivationFunctions::ActivationFunction activationFunction, int outputLength)
+	{
+		Neurons = neurons;
+		ActivationFunction = activationFunction;
+		OutputLength = outputLength;
+	}
+
 	double* Execute(double* input)
 	{
 		tuple<double**, double**> storedExecution = ExecuteStore(input);
