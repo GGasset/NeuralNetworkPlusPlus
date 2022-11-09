@@ -196,6 +196,7 @@ public:
 			neuronIterator++;
 			i++;
 		}
+		return gradientsLayer;
 	}
 
 public:
