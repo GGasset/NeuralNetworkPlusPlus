@@ -71,5 +71,10 @@ public:
 		tuple<double, list<double>, list<double>> output(biasGradient, weightGradients, previousActivationsGradients);
 		return output;
 	}
+
+	void ApplyGradients(Neuron gradients)
+	{
+		connections.ApplyGradients(gradients.connections);
+	}
 };
 
