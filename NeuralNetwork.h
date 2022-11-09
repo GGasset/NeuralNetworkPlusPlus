@@ -203,7 +203,7 @@ public:
 	}
 
 public:
-	void ApplyGradients(NeuralNetwork gradients)
+	void ApplyGradients(NeuralNetwork gradients, double learningRate)
 	{
 		auto layerIterator = Neurons.begin();
 		auto gLayerIterator = gradients.Neurons.begin();
@@ -213,7 +213,7 @@ public:
 			auto gNeuronIterator = (*gLayerIterator).begin();
 			for (size_t i = 0; neuronIterator != (*layerIterator).end(); i++, neuronIterator++, gNeuronIterator++)
 			{
-				(*neuronIterator).ApplyGradients((*gNeuronIterator));
+				(*neuronIterator).ApplyGradients((*gNeuronIterator), learningRate);
 			}
 		}
 	}

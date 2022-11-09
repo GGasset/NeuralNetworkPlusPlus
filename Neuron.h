@@ -72,9 +72,9 @@ public:
 		return output;
 	}
 
-	void ApplyGradients(Neuron gradients)
+	void ApplyGradients(Neuron gradients, double learningRate)
 	{
-		connections.ApplyGradients(gradients.connections);
+		connections.ApplyGradients(gradients.connections, learningRate);
 	}
 };
 

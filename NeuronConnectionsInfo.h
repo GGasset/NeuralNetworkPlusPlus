@@ -73,14 +73,14 @@ public:
 		return output;
 	}
 
-	void ApplyGradients(NeuronConnectionsInfo gradients)
+	void ApplyGradients(NeuronConnectionsInfo gradients, double learningRate)
 	{
 		auto weightIterator = Weights.begin();
 		auto gWeightIterator = gradients.Weights.begin();
 
 		for (long i = 0; weightIterator != Weights.end(); i++, weightIterator++, gWeightIterator++)
 		{
-			(*weightIterator) -= (*gWeightIterator);
+			(*weightIterator) -= (*gWeightIterator) * learningRate;
 		}
 	}
 
