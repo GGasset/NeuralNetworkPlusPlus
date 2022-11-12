@@ -18,7 +18,7 @@ public:
 	{
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
-		tuple<list<size_t>, list<size_t>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength);
+		tuple<list<size_t>, list<size_t>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength, 350);
 		Xs = get<0>(connectedPositions);
 		Ys = get<1>(connectedPositions);
 		Bias = bias;
