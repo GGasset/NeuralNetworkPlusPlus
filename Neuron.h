@@ -12,7 +12,7 @@ class Neuron
 public:
 	NeuronConnectionsInfo connections;
 
-	Neuron(int layerI, int previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
+	Neuron(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		connections = NeuronConnectionsInfo(layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
 	}
