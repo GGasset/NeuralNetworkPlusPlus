@@ -15,22 +15,44 @@ private:
 public:
 	NeuralNetwork(size_t shapeLength, size_t shape[], bool deleteShapeArr, ActivationFunctions::ActivationFunction activationFunction, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
-		Neurons = list<list<Neuron>>();
-		for (size_t i = 1; i < shapeLength; i++)
+		LayerInstantiator* layerInstantiators = new LayerInstantiator[shapeLength - 1];
+		thread* threads = new thread[shapeLength - 1];
+
+		for (size_t i = 0; i < shapeLength - 1; i++)
 		{
-			list<Neuron> currentLayer = GenerateNeuronLayer(i, shape[i], shape[i - 1], bias, minWeight, weightClosestTo0, maxWeight);
-			Neurons.push_back(currentLayer);
+			threads[i] = thread(std::ref(layerInstantiators[i]), i + 1, shape[i + 1], shape[i], bias, minWeight, weightClosestTo0, maxWeight);
+		}
+
+		Neurons = list<list<Neuron>>();
+		for (size_t i = 0; i < shapeLength - 1; i++)
+		{
+			threads[i].join();
+			Neurons.push_back(layerInstantiators[i].instantiatedLayer);
 		}
 
 		OutputLength = shape[shapeLength - 1];
 
 		ActivationFunction = activationFunction;
+
+		delete[] layerInstantiators;
+		delete[] threads;
 		if (deleteShapeArr)
 			delete[] shape;
 	}
 
 private:
-	list<Neuron> GenerateNeuronLayer(size_t layerI, size_t layerLength, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
+	class LayerInstantiator
+	{
+	public:
+		list<Neuron> instantiatedLayer;
+
+		void operator()(size_t layerI, size_t layerLength, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
+		{
+			instantiatedLayer = GenerateNeuronLayer(layerI, layerLength, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
+		}
+	};
+
+	static list<Neuron> GenerateNeuronLayer(size_t layerI, size_t layerLength, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		list<Neuron> layer = list<Neuron>();
 		NeuronInstatiator* neuronInstantiators = new NeuronInstatiator[layerLength];
