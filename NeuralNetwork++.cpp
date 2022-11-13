@@ -8,9 +8,8 @@ using namespace std;
 
 int main()
 {
-	int length = 124 * 124;
-	size_t shape[] = { 1, length, 5000, 500, 5000, length, 1};
-	NeuralNetwork n = NeuralNetwork(3, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
+	size_t shape[] = { 1, 100, 50, 25, 20, 15, 1};
+	NeuralNetwork n = NeuralNetwork(7, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
 
 	float* X = new float[1];
 	X[0] = 3.5;
@@ -24,7 +23,7 @@ int main()
 
 	for (size_t i = 0; i < 5000; i++)
 	{
-		n.ApplyGradients(n.GetGradients(X, Y, Cost::SquaredMean), .1);
+		n.ApplyGradients(n.GetGradients(X, Y, Cost::SquaredMean), .75);
 		output = n.Execute(X);
 		std::cout << output[0] << "\n";
 
