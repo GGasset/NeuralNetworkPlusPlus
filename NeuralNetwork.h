@@ -113,7 +113,6 @@ public:
 		return output;
 	}
 
-public:
 	/// <summary>
 	/// 
 	/// </summary>
@@ -136,6 +135,7 @@ public:
 		return output;
 	}
 
+private:
 	/// <summary>
 	/// 
 	/// </summary>
@@ -160,6 +160,7 @@ public:
 		return layerExecutionResults;
 	}
 
+public:
 	NeuralNetwork GetGradients(float* X, float* Y, Cost::CostFunction costFunction)
 	{
 		tuple<float**, float**> executionResults = ExecuteStore(X);
@@ -211,6 +212,7 @@ public:
 		return gradientsNetwork;
 	}
 
+private:
 	/// <summary>
 	/// 
 	/// </summary>
