@@ -88,6 +88,9 @@ public:
 				DataManipulation::AddLists(&Xs, positionGenerators[i].Xs);
 				DataManipulation::AddLists(&Ys, positionGenerators[i].Ys);
 			}
+
+			delete[] threads;
+			delete[] positionGenerators;
 		}
 		else
 		{
