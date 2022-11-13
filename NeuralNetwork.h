@@ -10,7 +10,7 @@ class NeuralNetwork
 private:
 	list<list<Neuron>> Neurons;
 	ActivationFunctions::ActivationFunction ActivationFunction;
-	int OutputLength;
+	size_t OutputLength;
 
 public:
 	NeuralNetwork(size_t shapeLength, size_t shape[], bool deleteShapeArr, ActivationFunctions::ActivationFunction activationFunction, float bias, float minWeight, float weightClosestTo0, float maxWeight)
@@ -18,11 +18,7 @@ public:
 		Neurons = list<list<Neuron>>();
 		for (size_t i = 1; i < shapeLength; i++)
 		{
-			list<Neuron> currentLayer = list<Neuron>();
-			for (size_t j = 0; j < shape[i]; j++)
-			{
-				currentLayer.push_back(Neuron(i, shape[i - 1], bias, minWeight, weightClosestTo0, maxWeight));
-			}
+			list<Neuron> currentLayer = GenerateNeuronLayer(i, shape[i], shape[i - 1], bias, minWeight, weightClosestTo0, maxWeight);
 			Neurons.push_back(currentLayer);
 		}
 
@@ -34,7 +30,40 @@ public:
 	}
 
 private:
-	NeuralNetwork(list<list<Neuron>> neurons, ActivationFunctions::ActivationFunction activationFunction, int outputLength)
+	list<Neuron> GenerateNeuronLayer(size_t layerI, size_t layerLength, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
+	{
+		list<Neuron> layer = list<Neuron>();
+		NeuronInstatiator* neuronInstantiators = new NeuronInstatiator[layerLength];
+		thread* neuronThreads = new thread[layerLength];
+
+		for (size_t i = 0; i < layerLength; i++)
+		{
+			neuronThreads[i] = thread(std::ref(neuronInstantiators[i]), layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
+		}
+
+		for (size_t i = 0; i < layerLength; i++)
+		{
+			neuronThreads[i].join();
+			layer.push_front(neuronInstantiators[i].instantiatedNeuron);
+		}
+
+		delete[] neuronThreads;
+		delete[] neuronInstantiators;
+		return layer;
+	}
+
+	class NeuronInstatiator
+	{
+	public:
+		Neuron instantiatedNeuron;
+
+		void operator()(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
+		{
+			instantiatedNeuron = Neuron(layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
+		}
+	};
+
+	NeuralNetwork(list<list<Neuron>> neurons, ActivationFunctions::ActivationFunction activationFunction, size_t outputLength)
 	{
 		Neurons = neurons;
 		ActivationFunction = activationFunction;
