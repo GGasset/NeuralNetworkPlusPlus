@@ -150,15 +150,38 @@ private:
 		float* layerActivations = new float[layerLength];
 
 		auto neuronIter = layer.begin();
+		thread* threads = new thread[layerLength];
+		NeuronExecutor* executors = new NeuronExecutor[layerLength];
 		for (size_t i = 0; neuronIter != layer.end(); i++, neuronIter++)
 		{
-			tuple<float, float> neuronExecutionResults = (*neuronIter).ExecuteStore(networkActivations, ActivationFunction);
-			layerLinears[i] = get<0>(neuronExecutionResults);
-			layerActivations[i] = get<1>(neuronExecutionResults);
+			threads[i] = thread(std::ref(executors[i]), neuronIter, networkActivations, ActivationFunction);
 		}
+
+		for (size_t i = 0; i < layerLength; i++)
+		{
+			threads[i].join();
+			layerLinears[i] = executors[i].LinearFunction;
+			layerActivations[i] = executors[i].Activation;
+		}
+
 		tuple<float*, float*> layerExecutionResults(layerLinears, layerActivations);
 		return layerExecutionResults;
 	}
+
+	class NeuronExecutor
+	{
+	public:
+		float LinearFunction;
+		float Activation;
+
+		void operator()(list<Neuron>::iterator neuronIter, float** networkActivations, ActivationFunctions::ActivationFunction activationFunction)
+		{
+			Neuron neuron = (*neuronIter);
+			tuple<float, float> neuronOutput = neuron.ExecuteStore(networkActivations, activationFunction);
+			LinearFunction = get<0>(neuronOutput);
+			Activation = get<1>(neuronOutput);
+		}
+	};
 
 public:
 	NeuralNetwork GetGradients(float* X, float* Y, Cost::CostFunction costFunction)
