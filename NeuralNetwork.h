@@ -164,6 +164,9 @@ private:
 			layerActivations[i] = executors[i].Activation;
 		}
 
+		delete[] threads;
+		delete[] executors;
+
 		tuple<float*, float*> layerExecutionResults(layerLinears, layerActivations);
 		return layerExecutionResults;
 	}
