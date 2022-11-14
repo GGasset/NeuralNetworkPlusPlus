@@ -241,25 +241,53 @@ private:
 	/// </summary>
 	/// <param name="layerI">Takes into account input layer as index 0</param>
 	/// <param name="layerIterator"></param>
-	/// <param name="neuronsGradient"></param>
+	/// <param name="networkCosts"></param>
 	/// <param name="networkLinears"></param>
 	/// <param name="networkActivations"></param>
 	/// <returns></returns>
-	list<Neuron> CalculateLayerGradients(size_t layerI, list<list<Neuron>>::iterator layerIterator, float** neuronsGradient, float** networkLinears, float** networkActivations)
+	list<Neuron> CalculateLayerGradients(size_t layerI, list<list<Neuron>>::iterator layerIterator, float** networkCosts, float** networkLinears, float** networkActivations)
 	{
 		list<Neuron> layer = (*layerIterator);
-		list<Neuron> gradientsLayer = list<Neuron>();
+		size_t layerLength = layer.size();
 
+		NeuronGradientsCalculator* gradientCalculators = new NeuronGradientsCalculator[layerLength];
+		thread* threads = new thread[layerLength];
 		auto neuronIterator = layer.begin();
 		size_t i = 0;
-		while (neuronIterator != layer.end())
+		while (neuronIterator != layer.end() && i < layerLength)
 		{
 			float linearFunction = networkLinears[layerI - 1][i];
-			float activation = neuronsGradient[layerI][i];
+			float cost = networkCosts[layerI][i];
 
+			threads[i] = thread(std::ref(gradientCalculators[i]), neuronIterator, networkCosts, networkActivations, linearFunction, cost, ActivationFunction);
+
+			neuronIterator++;
+			i++;
+		}
+
+		list<Neuron> gradientsLayer = list<Neuron>();
+		for (i = 0; i < layerLength; i++)
+		{
+			threads[i].join();
+			gradientsLayer.push_back(gradientCalculators[i].outputGradients);
+		}
+
+		delete[] gradientCalculators;
+		delete[] threads;
+
+		return gradientsLayer;
+	}
+
+	class NeuronGradientsCalculator
+	{
+	public:
+		Neuron outputGradients;
+
+		void operator()(list<Neuron>::iterator neuronIterator, float** networkCosts, float** networkActivations, float linearFunction, float neuronCost, ActivationFunctions::ActivationFunction activationFunction)
+		{
 			Neuron neuron = (*neuronIterator);
-			tuple<float, list<float>, list<float>> gradients = neuron.GetGradients(networkActivations, linearFunction, activation, ActivationFunction);
 
+			tuple<float, list<float>, list<float>> gradients = neuron.GetGradients(networkActivations, linearFunction, neuronCost, activationFunction);
 			Neuron gradientNeuron = Neuron(get<0>(gradients), list<size_t>(), list<size_t>(), get<1>(gradients));
 
 			NeuronConnectionsInfo neuronInfo = neuron.connections;
@@ -268,15 +296,10 @@ private:
 			auto activationGradientIterator = get<2>(gradients).begin();
 			for (size_t j = 0; connectionsXIterator != neuronInfo.Xs.end(); j++, connectionsXIterator++, connectionsYIterator++, activationGradientIterator++)
 			{
-				neuronsGradient[*connectionsXIterator][*connectionsYIterator] -= (*activationGradientIterator);
+				networkCosts[*connectionsXIterator][*connectionsYIterator] -= (*activationGradientIterator);
 			}
-
-			gradientsLayer.push_back(gradientNeuron);
-			neuronIterator++;
-			i++;
 		}
-		return gradientsLayer;
-	}
+	};
 
 public:
 	void ApplyGradients(NeuralNetwork gradients, float learningRate)
