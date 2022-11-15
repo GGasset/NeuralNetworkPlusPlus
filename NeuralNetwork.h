@@ -152,6 +152,7 @@ private:
 		auto neuronIter = layer.begin();
 		thread* threads = new thread[layerLength];
 		NeuronExecutor* executors = new NeuronExecutor[layerLength];
+
 		for (size_t i = 0; neuronIter != layer.end(); i++, neuronIter++)
 		{
 			threads[i] = thread(std::ref(executors[i]), neuronIter, networkActivations, ActivationFunction);
@@ -257,7 +258,7 @@ private:
 		thread* threads = new thread[layerLength];
 		auto neuronIterator = layer.begin();
 		size_t i = 0;
-		while (neuronIterator != layer.end() && i < layerLength)
+		while (neuronIterator != layer.end())
 		{
 			float linearFunction = networkLinears[layerI - 1][i];
 			float cost = networkCosts[layerI][i];
