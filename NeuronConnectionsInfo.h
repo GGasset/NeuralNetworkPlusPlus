@@ -76,7 +76,7 @@ public:
 		auto weightIterator = Weights.begin();
 		auto gWeightIterator = gradients.Weights.begin();
 
-		for (size_t i = 0; weightIterator != Weights.end(); i++, weightIterator++, gWeightIterator++)
+		for (size_t i = 0; weightIterator != Weights.end() && gWeightIterator != gradients.Weights.end(); i++, weightIterator++, gWeightIterator++)
 		{
 			(*weightIterator) -= (*gWeightIterator) * learningRate;
 		}

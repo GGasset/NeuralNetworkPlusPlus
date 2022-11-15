@@ -124,7 +124,7 @@ public:
 		float** networkActivations = new float* [GetNetworkLayerCount() + 1];
 		networkActivations[0] = input;
 		auto layerIter = Neurons.begin();
-		for (size_t i = 0; i < GetNetworkLayerCount(); i++, layerIter++)
+		for (size_t i = 0; layerIter != Neurons.end(); i++, layerIter++)
 		{
 			tuple<float*, float*> layerExecutionResults = ExecuteStoreLayer(layerIter, networkActivations);
 			networkLinearFunctions[i] = get<0>(layerExecutionResults);
@@ -292,7 +292,7 @@ private:
 			Neuron neuron = (*neuronIterator);
 
 			tuple<float, list<float>, list<float>> gradients = neuron.GetGradients(networkActivations, linearFunction, neuronCost, activationFunction);
-			Neuron gradientNeuron = Neuron(get<0>(gradients), list<size_t>(), list<size_t>(), get<1>(gradients));
+			outputGradients = Neuron(get<0>(gradients), list<size_t>(), list<size_t>(), get<1>(gradients));
 
 			NeuronConnectionsInfo neuronInfo = neuron.connections;
 			auto connectionsXIterator = neuronInfo.Xs.begin();
