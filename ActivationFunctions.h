@@ -27,7 +27,7 @@ public:
 
 	static float RELUActivation(float linearFunc)
 	{
-		return fmax(0, linearFunc);
+		return fmaxf(0, linearFunc);
 	}
 
 	static float SigmoidActivation(float linearFunc)

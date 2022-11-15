@@ -1,5 +1,5 @@
 using namespace std;
-#include "Cost.h";
+#include "Cost.h"
 #include "Neuron.h"
 #include <list>
 #include <tuple>
@@ -187,6 +187,11 @@ private:
 		}
 	};
 
+public:
+	
+
+private:
+	
 public:
 	NeuralNetwork GetGradients(float* X, float* Y, Cost::CostFunction costFunction)
 	{

@@ -1,4 +1,4 @@
-#include "NeuronConnectionsInfo.h";
+#include "NeuronConnectionsInfo.h"
 #include "ActivationFunctions.h"
 #include "Derivatives.h"
 #include <stdlib.h>

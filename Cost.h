@@ -31,7 +31,7 @@ public:
 
 	static float SquaredMeanLoss(float neuronOutput, float Y)
 	{
-		return pow(neuronOutput - Y, 2);
+		return powf(neuronOutput - Y, 2);
 	}
 };
 
