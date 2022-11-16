@@ -9,7 +9,6 @@ using namespace std;
 
 class ValueGeneration
 {
-
 public:
 	static float GenerateWeight(float minValue, float valueClosestTo0, float maxValue)
 	{
@@ -59,68 +58,48 @@ public:
 		return output;
 	}
 
-	static tuple<list<size_t>, list<size_t>> GenerateConnectedPositions(size_t x, size_t startingY, size_t outputLength, size_t connectionsPerThread)
+	static tuple<size_t*, size_t*> GenerateConnectedPositions(size_t x, size_t startingY, size_t outputLength, size_t connectionsPerThread)
 	{
-		list<size_t> Xs, Ys;
-		Xs = list<size_t>();
-		Ys = list<size_t>();
+		size_t* Xs = new size_t[outputLength];
+		size_t* Ys = new size_t[outputLength];
 
 		size_t nThreads = outputLength / connectionsPerThread;
 		size_t remainingConnections = outputLength % connectionsPerThread;
 		bool isThereARemainingThread = remainingConnections > 0;
 		size_t totalThreads = nThreads + isThereARemainingThread;
 
-		if ((nThreads + isThereARemainingThread) > 1)
+		thread* threads = new thread[totalThreads];
+		ConnectedPositionsGenerator* positionGenerators = new ConnectedPositionsGenerator[totalThreads];
+
+		for (size_t i = 0; i < nThreads; i++)
 		{
-			thread* threads = new thread[totalThreads];
-			ConnectedPositionsGenerator* positionGenerators = new ConnectedPositionsGenerator[totalThreads];
-
-			for (size_t i = 0; i < nThreads; i++)
-			{
-				threads[i] = thread(std::ref(positionGenerators[i]), x, startingY + (connectionsPerThread * i), connectionsPerThread);
-			}
-			if (isThereARemainingThread)
-				threads[nThreads] = thread(std::ref(positionGenerators[nThreads]), x, startingY + (connectionsPerThread * nThreads), remainingConnections);
-
-			for (size_t i = 0; i < totalThreads; i++)
-			{
-				threads[i].join();
-				DataManipulation::AddLists(&Xs, positionGenerators[i].Xs);
-				DataManipulation::AddLists(&Ys, positionGenerators[i].Ys);
-			}
-
-			delete[] threads;
-			delete[] positionGenerators;
+			threads[i] = thread(std::ref(positionGenerators[i]), Xs, Ys, x, startingY + (connectionsPerThread * i), connectionsPerThread);
 		}
-		else
+		if (isThereARemainingThread)
+			threads[nThreads] = thread(std::ref(positionGenerators[nThreads]), Xs, Ys, x, startingY + (connectionsPerThread * nThreads), remainingConnections);
+
+		for (size_t i = 0; i < totalThreads; i++)
 		{
-			ConnectedPositionsGenerator positionGenerator;
-			thread thrd(std::ref(positionGenerator), x, startingY, outputLength);
-			thrd.join();
-			Xs = positionGenerator.Xs;
-			Ys = positionGenerator.Ys;
+			threads[i].join();
 		}
-			
-		tuple<list<size_t>, list<size_t>> output(Xs, Ys);
+
+		delete[] threads;
+		delete[] positionGenerators;
+
+		tuple<size_t*, size_t*> output(Xs, Ys);
 		return output;
-
 	}
 
 private:
 	class ConnectedPositionsGenerator
 	{
 	public:
-		list<size_t> Xs, Ys;
-
-		void operator()(size_t x, size_t startingY, size_t outputLength)
+		void operator()(size_t* Xs, size_t* Ys, size_t x, size_t startingY, size_t outputLength)
 		{
-			Xs = list<size_t>();
-			Ys = list<size_t>();
-
 			for (size_t i = 0; i < outputLength; i++)
 			{
-				Xs.push_back(x);
-				Ys.push_back(startingY + i);
+				Xs[startingY + i] = x;
+				Ys[startingY + i] = startingY + i;
 			}
 		}
 	};
@@ -131,4 +110,3 @@ public:
 		return (rand() % 1000) / 1000.0F;
 	}
 };
-
