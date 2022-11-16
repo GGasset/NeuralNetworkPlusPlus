@@ -210,7 +210,7 @@ public:
 		{
 			threads[i].join();
 			gradients[i] = (*gradientCalculators[i].network);
-	
+
 		}
 
 		delete[] threads;
@@ -350,6 +350,32 @@ private:
 	};
 
 public:
+	void ApplyGradients(NeuralNetwork* gradients, size_t networkGradientsCount, float learningRate)
+	{
+		thread* threads = new thread[networkGradientsCount];
+		NetworkGradientsApplyer* gradientApplyers = new NetworkGradientsApplyer[networkGradientsCount];
+
+		for (size_t i = 0; i < networkGradientsCount; i++)
+		{
+			gradientApplyers[i].network = this;
+			gradientApplyers[i].gradients = gradients + i;
+		}
+	}
+
+private:
+	class NetworkGradientsApplyer
+	{
+	public:
+		NeuralNetwork* network;
+		NeuralNetwork* gradients;
+
+		void operator()(float learningRate)
+		{
+			(*network).ApplyGradients(*gradients, learningRate);
+		}
+	};
+
+public:
 	void ApplyGradients(NeuralNetwork gradients, float learningRate)
 	{
 		auto layerIterator = Neurons.begin();
@@ -364,6 +390,7 @@ public:
 			}
 		}
 	}
+
 
 	ActivationFunctions::ActivationFunction GetActivationFunction()
 	{
