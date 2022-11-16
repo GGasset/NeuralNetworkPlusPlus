@@ -193,7 +193,7 @@ private:
 	};
 
 public:
-	void SupervisedLearningBatch(float** X, float** Y, size_t startingIndex, size_t batchLength, Cost::CostFunction costFunction)
+	void SupervisedLearningBatch(float** X, float** Y, size_t startingIndex, size_t batchLength, Cost::CostFunction costFunction, float learningRate)
 	{
 		thread* threads = new thread[batchLength];
 		NetworkGradientsCalculator* gradientCalculators = new NetworkGradientsCalculator[batchLength];
@@ -210,8 +210,9 @@ public:
 		{
 			threads[i].join();
 			gradients[i] = (*gradientCalculators[i].network);
-
 		}
+
+		ApplyGradients(gradients, batchLength, learningRate);
 
 		delete[] threads;
 		delete[] gradientCalculators;
