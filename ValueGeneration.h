@@ -48,16 +48,40 @@ public:
 		return output;
 	}
 
-	static list<float> GenerateWeigths(size_t outputLength, float minValue, float valueClosestTo0, float maxValue)
+	static float* GenerateWeigths(size_t outputLength, size_t weightsPerThread, float minValue, float valueClosestTo0, float maxValue)
 	{
-		list<float> output = list<float>();
-		for (size_t i = 0; i < outputLength; i++)
+		size_t nThreads = outputLength / weightsPerThread;
+		size_t remainingWeights = outputLength % weightsPerThread;
+		bool isThereARemainingThread = remainingWeights > 0;
+		size_t totalThreads = nThreads + isThereARemainingThread;
+
+		thread* threads = new thread[totalThreads];
+		WeightGenerator* weightsGenerators = new WeightGenerator[totalThreads];
+
+		float* output = new float[outputLength];
+		for (size_t i = 0; i < nThreads; i++)
 		{
-			output.push_front(GenerateWeight(minValue, valueClosestTo0, maxValue));
+			threads[i] = thread(std::ref(weightsGenerators[i]), output, weightsPerThread * i, weightsPerThread, minValue, valueClosestTo0, maxValue);
 		}
+		if (isThereARemainingThread)
+			threads[nThreads] = thread(std::ref(weightsGenerators[nThreads]), output, weightsPerThread * nThreads, remainingWeights, minValue, valueClosestTo0, maxValue);
 		return output;
 	}
 
+private:
+	class WeightGenerator
+	{
+	public:
+		void operator()(float* weightArray, size_t startingI, size_t outputLength, float minValue, float valueClosestTo0, float maxValue)
+		{
+			for (size_t i = 0; i < outputLength; i++)
+			{
+				weightArray[startingI + i] = GenerateWeight(minValue, valueClosestTo0, maxValue);
+			}
+		}
+	};
+
+public:
 	static tuple<size_t*, size_t*> GenerateConnectedPositions(size_t x, size_t startingY, size_t outputLength, size_t connectionsPerThread)
 	{
 		size_t* Xs = new size_t[outputLength];
