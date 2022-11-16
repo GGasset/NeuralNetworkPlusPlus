@@ -65,6 +65,12 @@ public:
 		}
 		if (isThereARemainingThread)
 			threads[nThreads] = thread(std::ref(weightsGenerators[nThreads]), output, weightsPerThread * nThreads, remainingWeights, minValue, valueClosestTo0, maxValue);
+
+		for (size_t i = 0; i < totalThreads; i++)
+		{
+			threads[i].join();
+		}
+
 		return output;
 	}
 
