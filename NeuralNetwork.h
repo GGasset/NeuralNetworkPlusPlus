@@ -92,6 +92,11 @@ private:
 		OutputLength = outputLength;
 	}
 
+	NeuralNetwork()
+	{
+
+	}
+
 public:
 	float* Execute(float* input)
 	{
@@ -188,9 +193,43 @@ private:
 	};
 
 public:
+	void SupervisedLearningBatch(float** X, float** Y, size_t startingIndex, size_t batchLength, Cost::CostFunction costFunction)
+	{
+		thread* threads = new thread[batchLength];
+		NetworkGradientsCalculator* gradientCalculators = new NetworkGradientsCalculator[batchLength];
+
+		for (size_t i = 0; i < batchLength; i++)
+		{
+			int dataI = startingIndex + i;
+			gradientCalculators[i].network = this;
+			threads[i] = thread(std::ref(gradientCalculators[i]), X[dataI], Y[dataI], costFunction);
+		}
+
+		NeuralNetwork* gradients = new NeuralNetwork[batchLength];
+		for (size_t i = 0; i < batchLength; i++)
+		{
+			threads[i].join();
+			gradients[i] = (*gradientCalculators[i].network);
 	
+		}
+
+		delete[] threads;
+		delete[] gradientCalculators;
+		delete[] gradients;
+	}
 
 private:
+	class NetworkGradientsCalculator
+	{
+	public:
+		NeuralNetwork* network;
+		NeuralNetwork* gradients;
+
+		void operator()(float* X, float* Y, Cost::CostFunction costFunction)
+		{
+			(*gradients) = (*network).GetGradients(X, Y, costFunction);
+		}
+	};
 	
 public:
 	NeuralNetwork GetGradients(float* X, float* Y, Cost::CostFunction costFunction)
