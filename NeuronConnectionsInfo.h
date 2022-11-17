@@ -94,6 +94,10 @@ public:
 		{
 			threads[i].join();
 		}
+
+		delete[] gradientApplyers;
+		delete[] threads;
+		gradients.Dispose();
 	}
 
 private:
