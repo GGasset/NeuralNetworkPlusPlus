@@ -33,6 +33,9 @@ public:
 
 	NeuronConnectionsInfo() {
 		Bias = 1;
+		connectionCount = 0;
+		Xs = Ys = NULL;
+		Weights = NULL;
 	}
 
 	float LinearFunction(float** networkActivations)
@@ -54,19 +57,55 @@ public:
 	/// <returns>tuple(weightGradients, previousActivationGradients)</returns>
 	tuple<float*, float*> GetGradients(float activationGradient, float** networkActivations)
 	{
+		size_t nThreads = connectionCount / connectionsPerThread;
+		size_t remainingConnections = connectionCount % connectionsPerThread;
+		bool isThereARemainingThread = remainingConnections > 0;
+		size_t totalThreads = nThreads + isThereARemainingThread;
+
+		GradientCalculator* gradientCalculators = new GradientCalculator[totalThreads];
+		thread* threads = new thread[totalThreads];
+
 		float* weightGradients = new float[connectionCount];
 		float* previousActivationsGradients = new float[connectionCount];
-
-		for (int i = 0; i < connectionCount; i++)
+		for (size_t i = 0; i < nThreads; i++)
 		{
-			weightGradients[i] = activationGradient * networkActivations[Xs[i]][Ys[i]];
-			previousActivationsGradients[i] = activationGradient * Weights[i];
+			threads[i] = thread(std::ref(gradientCalculators[i]), this, activationGradient, networkActivations, weightGradients, previousActivationsGradients,
+				connectionsPerThread * i, connectionsPerThread);
 		}
+		if (isThereARemainingThread)
+		{
+			threads[nThreads] = thread(std::ref(gradientCalculators[nThreads]), this, activationGradient, networkActivations, weightGradients, previousActivationsGradients,
+				connectionsPerThread * nThreads, remainingConnections);
+		}
+
+		for (size_t i = 0; i < totalThreads; i++)
+		{
+			threads[i].join();
+		}
+
+		delete[] gradientCalculators;
+		delete[] threads;
 
 		tuple<float*, float*> output(weightGradients, previousActivationsGradients);
 		return output;
 	}
 
+private:
+	class GradientCalculator
+	{
+	public:
+		void operator()(NeuronConnectionsInfo* neuronConnectionsInfo, float activationGradient, float** networkActivations, float* outputWeightGradients, float* outputPreviousActivationsGradients,
+			size_t startingI, size_t connectionsToCalculate)
+		{
+			for (int i = startingI; i < connectionsToCalculate; i++)
+			{
+				outputWeightGradients[i] = activationGradient * networkActivations[neuronConnectionsInfo[0].Xs[i]][neuronConnectionsInfo[0].Ys[i]];
+				outputPreviousActivationsGradients[i] = activationGradient * neuronConnectionsInfo[0].Weights[i];
+			}
+		}
+	};
+
+public:
 	void ApplyGradients(NeuronConnectionsInfo& gradients, float learningRate)
 	{
 		size_t nThreads = connectionCount / connectionsPerThread;
@@ -87,7 +126,7 @@ public:
 		{
 			gradientApplyers[nThreads].Connections = this;
 			gradientApplyers[nThreads].Gradients = &gradients;
-			threads[nThreads] = thread(std::ref(gradientApplyers[nThreads]), nThreads * connectionsPerThread, connectionsPerThread, learningRate);
+			threads[nThreads] = thread(std::ref(gradientApplyers[nThreads]), nThreads * connectionsPerThread, leftConnections, learningRate);
 		}
 
 		for (size_t i = 0; i < totalThreads; i++)
