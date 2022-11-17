@@ -69,14 +69,50 @@ public:
 
 	void ApplyGradients(NeuronConnectionsInfo gradients, float learningRate)
 	{
-		for (size_t i = 0; weightIterator != Weights.end() && gWeightIterator != gradients.Weights.end(); i++, weightIterator++, gWeightIterator++)
+		size_t nThreads = connectionCount / connectionsPerThread;
+		size_t leftConnections = connectionCount % connectionsPerThread;
+		bool isThereARemainingThread = leftConnections > 0;
+		size_t totalThreads = nThreads + isThereARemainingThread;
+
+		GradientApplyer* gradientApplyers = new GradientApplyer[totalThreads];
+		thread* threads = new thread[totalThreads];
+
+		for (size_t i = 0; i < nThreads; i++)
 		{
-			(*weightIterator) -= (*gWeightIterator) * learningRate;
+			gradientApplyers[i].Connections = this;
+			gradientApplyers[i].Gradients = &gradients;
+			threads[i] = thread(std::ref(gradientApplyers[i]), connectionsPerThread * i, connectionsPerThread, learningRate);
+		}
+		if (isThereARemainingThread)
+		{
+			gradientApplyers[nThreads].Connections = this;
+			gradientApplyers[nThreads].Gradients = &gradients;
+			threads[nThreads] = thread(std::ref(gradientApplyers[nThreads]), nThreads * connectionsPerThread, connectionsPerThread, learningRate);
+		}
+
+		for (size_t i = 0; i < totalThreads; i++)
+		{
+			threads[i].join();
 		}
 	}
 
+private:
+	class GradientApplyer
+	{
+	public:
+		NeuronConnectionsInfo* Connections;
+		NeuronConnectionsInfo* Gradients;
 
+		void operator()(size_t startingI, size_t weightsToApplyCount, float learningRate)
+		{
+			for (size_t i = 0; i < weightsToApplyCount; i++)
+			{
+				Connections[0].Weights[startingI + i] -= Gradients[0].Weights[startingI + i] * learningRate;
+			}
+		}
+	};
 
+public:
 	size_t GetConnectionCount()
 	{
 		return connectionCount;
