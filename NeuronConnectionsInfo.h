@@ -33,11 +33,13 @@ public:
 
 	NeuronConnectionsInfo operator=(const NeuronConnectionsInfo& in)
 	{
-		connectionCount = in.connectionCount;
-		Xs = in.Xs;
-		Ys = in.Ys;
-		Weights = in.Weights;
-		Bias = in.Bias;
+		NeuronConnectionsInfo out;
+		out.connectionCount = in.connectionCount;
+		out.Xs = in.Xs;
+		out.Ys = in.Ys;
+		out.Weights = in.Weights;
+		out.Bias = in.Bias;
+		return out;
 	}
 
 	NeuronConnectionsInfo() {
