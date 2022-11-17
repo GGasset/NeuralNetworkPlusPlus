@@ -49,15 +49,51 @@ public:
 
 	float LinearFunction(float** networkActivations)
 	{
-		float linearFunction = Bias;
+		size_t nThreads = connectionCount / connectionsPerThread;
+		size_t remainingConnections = connectionCount % connectionsPerThread;
+		bool isThereARemainingThread = remainingConnections > 0;
+		size_t totalThreads = nThreads + isThereARemainingThread;
 
-		for (size_t i = 0; connectionCount; i++)
+		thread* threads = new thread[totalThreads];
+		LinearFunctionCalculator* linearFunctionCalculators = new LinearFunctionCalculator[totalThreads];
+
+		for (size_t i = 0; nThreads; i++)
 		{
-			linearFunction += networkActivations[Xs[i]][Ys[i]] * Weights[i];
+			threads[i] = thread(std::ref(linearFunctionCalculators[i]), this, networkActivations, connectionsPerThread * i, connectionsPerThread);
 		}
+		if (isThereARemainingThread)
+			threads[nThreads] = thread(std::ref(linearFunctionCalculators[nThreads]), this, networkActivations, connectionsPerThread * nThreads, remainingConnections);
+
+		float linearFunction = Bias;
+		for (size_t i = 0; i < totalThreads; i++)
+		{
+			threads[i].join();
+			linearFunction += linearFunctionCalculators[i].output;
+		}
+
+		delete[] threads;
+		delete[] linearFunctionCalculators;
+
 		return linearFunction;
 	}
 
+private:
+	class LinearFunctionCalculator
+	{
+	public:
+		float output;
+
+		void operator()(NeuronConnectionsInfo* connectionsInfo, float** networkActivations, size_t startingI, size_t outputConnectionsCount)
+		{
+			output = 0;
+			for (size_t i = startingI; i < startingI + outputConnectionsCount; i++)
+			{
+				output += networkActivations[connectionsInfo->Xs[i]][connectionsInfo->Ys[i]] * connectionsInfo->Weights[i];
+			}
+		}
+	};
+
+public:
 	/// <summary>
 	/// 
 	/// </summary>
@@ -106,7 +142,7 @@ private:
 		void operator()(NeuronConnectionsInfo* neuronConnectionsInfo, float activationGradient, float** networkActivations, float* outputWeightGradients, float* outputPreviousActivationsGradients,
 			size_t startingI, size_t connectionsToCalculate)
 		{
-			for (int i = startingI; i < connectionsToCalculate; i++)
+			for (int i = startingI; i < startingI + connectionsToCalculate; i++)
 			{
 				outputWeightGradients[i] = activationGradient * networkActivations[neuronConnectionsInfo[0].Xs[i]][neuronConnectionsInfo[0].Ys[i]];
 				outputPreviousActivationsGradients[i] = activationGradient * neuronConnectionsInfo[0].Weights[i];
