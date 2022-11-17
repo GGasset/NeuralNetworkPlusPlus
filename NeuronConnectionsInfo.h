@@ -6,19 +6,25 @@ using namespace std;
 
 class NeuronConnectionsInfo
 {
-public:
-	list<size_t> Xs;
-	list<size_t> Ys;
+private:
+	size_t connectionCount;
 
-	list<float> Weights;
+public:
+	size_t* Xs;
+	size_t* Ys;
+
+	float* Weights;
 
 	float Bias;
 
 	NeuronConnectionsInfo(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
+		connectionCount = previousLayerLength;
+		size_t connectionsPerThread = 350;
+
 		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
 
-		tuple<list<size_t>, list<size_t>> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength, 350);
+		tuple<size_t*, size_t*> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength, connectionsPerThread);
 		Xs = get<0>(connectedPositions);
 		Ys = get<1>(connectedPositions);
 		Bias = bias;
@@ -31,17 +37,11 @@ public:
 	float LinearFunction(float** networkActivations)
 	{
 		float linearFunction = Bias;
-		auto xsIterator = Xs.begin();
-		auto ysIterator = Ys.begin();
-		auto weightsIterator = Weights.begin();
 
-		for (size_t i = 0; weightsIterator != Weights.end(); i++, xsIterator++, ysIterator++, weightsIterator++)
+		for (size_t i = 0; connectionCount; i++)
 		{
-			size_t x, y;
-			x = *xsIterator;
-			y = *ysIterator;
-			float currentActivation = networkActivations[x][y];
-			linearFunction += currentActivation * (*weightsIterator);
+			float currentActivation = ;
+			linearFunction += networkActivations[Xs[i]][Ys[i]] * Weights[i];
 		}
 		return linearFunction;
 	}
@@ -52,22 +52,18 @@ public:
 	/// <param name="activationGradient"></param>
 	/// <param name="networkActivations"></param>
 	/// <returns>tuple(weightGradients, previousActivationGradients)</returns>
-	tuple<list<float>, list<float>> GetGradients(float activationGradient, float** networkActivations)
+	tuple<float*, float*> GetGradients(float activationGradient, float** networkActivations)
 	{
-		list<float> weightGradients, previousActivationsGradients;
-		weightGradients = list<float>();
-		previousActivationsGradients = list<float>();
-		auto xsIterator = Xs.begin();
-		auto ysIterator = Ys.begin();
-		auto weightsIterator = Weights.begin();
+		float* weightGradients = new float[connectionCount];
+		float* previousActivationsGradients = new float[connectionCount];
 
-		for (int i = 0; weightsIterator != Weights.end(); i++, xsIterator++, ysIterator++, weightsIterator++)
+		for (int i = 0; i < connectionCount; i++)
 		{
-			weightGradients.push_back(activationGradient * networkActivations[*xsIterator][*ysIterator]);
-			previousActivationsGradients.push_back(activationGradient * *weightsIterator);
+			weightGradients[i] = activationGradient * networkActivations[Xs[i]][Ys[i]];
+			previousActivationsGradients[i] = activationGradient * Weights[i];
 		}
 
-		tuple<list<float>, list<float>> output(weightGradients, previousActivationsGradients);
+		tuple<float*, float*> output(weightGradients, previousActivationsGradients);
 		return output;
 	}
 
@@ -84,7 +80,7 @@ public:
 
 	size_t GetConnectionCount()
 	{
-		return Weights.size();
+		return connectionCount;
 	}
 };
 
