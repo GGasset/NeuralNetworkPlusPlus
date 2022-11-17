@@ -59,7 +59,7 @@ public:
 		thread* threads = new thread[totalThreads];
 		LinearFunctionCalculator* linearFunctionCalculators = new LinearFunctionCalculator[totalThreads];
 
-		for (size_t i = 0; nThreads; i++)
+		for (size_t i = 0; i < nThreads; i++)
 		{
 			threads[i] = thread(std::ref(linearFunctionCalculators[i]), this, networkActivations, connectionsPerThread * i, connectionsPerThread);
 		}
