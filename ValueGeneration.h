@@ -48,7 +48,7 @@ public:
 		return output;
 	}
 
-	static float* GenerateWeigths(size_t outputLength, size_t weightsPerThread, float minValue, float valueClosestTo0, float maxValue)
+	static float* GenerateWeigths(size_t outputLength, float minValue, float valueClosestTo0, float maxValue, size_t weightsPerThread)
 	{
 		size_t nThreads = outputLength / weightsPerThread;
 		size_t remainingWeights = outputLength % weightsPerThread;
