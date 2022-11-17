@@ -17,12 +17,13 @@ public:
 
 	float Bias;
 
+	const size_t connectionsPerThread = 350;
+
 	NeuronConnectionsInfo(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		connectionCount = previousLayerLength;
-		size_t connectionsPerThread = 350;
 
-		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight);
+		Weights = ValueGeneration::GenerateWeigths(previousLayerLength, minWeight, weightClosestTo0, maxWeight, connectionsPerThread);
 
 		tuple<size_t*, size_t*> connectedPositions = ValueGeneration::GenerateConnectedPositions(layerI - 1, 0, previousLayerLength, connectionsPerThread);
 		Xs = get<0>(connectedPositions);
@@ -68,14 +69,13 @@ public:
 
 	void ApplyGradients(NeuronConnectionsInfo gradients, float learningRate)
 	{
-		auto weightIterator = Weights.begin();
-		auto gWeightIterator = gradients.Weights.begin();
-
 		for (size_t i = 0; weightIterator != Weights.end() && gWeightIterator != gradients.Weights.end(); i++, weightIterator++, gWeightIterator++)
 		{
 			(*weightIterator) -= (*gWeightIterator) * learningRate;
 		}
 	}
+
+
 
 	size_t GetConnectionCount()
 	{
