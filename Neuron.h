@@ -17,9 +17,8 @@ public:
 		connections = NeuronConnectionsInfo(layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
 	}
 
-	Neuron(float bias, list<size_t> connectionsX, list<size_t> connectionsY, list<float> weights)
+	Neuron(float bias, size_t* connectionsX, size_t* connectionsY, float* weights)
 	{
-		connections = NeuronConnectionsInfo(); 
 		connections.Bias = bias;
 		connections.Xs = connectionsX;
 		connections.Ys = connectionsY;
@@ -59,16 +58,16 @@ public:
 	/// <param name="linearFunction"></param>
 	/// <param name="neuronCost"></param>
 	/// <param name="activationType"></param>
-	/// <returns>tuple(biasGradient, weightGradient, previousActivationGradients\)</returns>
-	tuple<float, list<float>, list<float>> GetGradients(float** networkActivations, float linearFunction, float neuronCost, ActivationFunctions::ActivationFunction activationType)
+	/// <returns>tuple(biasGradient, weightGradient, previousActivationGradients)</returns>
+	tuple<float, float*, float*> GetGradients(float** networkActivations, float linearFunction, float neuronCost, ActivationFunctions::ActivationFunction activationType)
 	{
 		float biasGradient = neuronCost * Derivatives::DerivativeOf(linearFunction, activationType);
-		tuple<list<float>, list<float>> connectionsGradients = connections.GetGradients(biasGradient, networkActivations);
+		tuple<float*, float*> connectionsGradients = connections.GetGradients(biasGradient, networkActivations);
 
-		list<float> weightGradients = get<0>(connectionsGradients);
-		list<float> previousActivationsGradients = get<1>(connectionsGradients);
+		float* weightGradients = get<0>(connectionsGradients);
+		float* previousActivationsGradients = get<1>(connectionsGradients);
 
-		tuple<float, list<float>, list<float>> output(biasGradient, weightGradients, previousActivationsGradients);
+		tuple<float, float*, float*> output(biasGradient, weightGradients, previousActivationsGradients);
 		return output;
 	}
 
