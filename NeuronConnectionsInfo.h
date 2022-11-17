@@ -67,7 +67,7 @@ public:
 		return output;
 	}
 
-	void ApplyGradients(NeuronConnectionsInfo gradients, float learningRate)
+	void ApplyGradients(NeuronConnectionsInfo& gradients, float learningRate)
 	{
 		size_t nThreads = connectionCount / connectionsPerThread;
 		size_t leftConnections = connectionCount % connectionsPerThread;
@@ -116,6 +116,13 @@ public:
 	size_t GetConnectionCount()
 	{
 		return connectionCount;
+	}
+
+	void Dispose()
+	{
+		delete[] Xs;
+		delete[] Ys;
+		delete[] Weights;
 	}
 };
 
