@@ -40,7 +40,6 @@ public:
 
 		for (size_t i = 0; connectionCount; i++)
 		{
-			float currentActivation = ;
 			linearFunction += networkActivations[Xs[i]][Ys[i]] * Weights[i];
 		}
 		return linearFunction;
