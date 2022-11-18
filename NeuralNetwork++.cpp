@@ -4,18 +4,15 @@
 using namespace std;
 #include <iostream>
 #include "NeuralNetwork.h"
-#include "Cost.h"
 
 int main()
 {
-	size_t shape[] = { 1, 100, 50, 25, 20, 15, 1};
+	size_t shape[] = { 1, 1000, 600, 400, 300, 150, 50, 10, 1};
 	NeuralNetwork n = NeuralNetwork(7, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
 
-	float* X = new float[1];
-	X[0] = 3.5;
+	float X[] = {3.5f};
 	
-	float* Y = new float[1];
-	Y[0] = .54321;
+	float Y[] = {.987654321f};
 
 	float* output = n.Execute(X);
 	std::cout << output[0] << "\n";
@@ -29,6 +26,8 @@ int main()
 
 		delete[] output;
 	}
+
+	n.Dispose();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
