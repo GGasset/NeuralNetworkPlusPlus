@@ -1,4 +1,5 @@
 using namespace std;
+#include "ActivationFunctions.h";
 #include "Cost.h"
 #include "Neuron.h"
 #include <list>
@@ -7,7 +8,7 @@ using namespace std;
 #pragma once
 class NeuralNetwork
 {
-private:
+public:
 	list<list<Neuron>> Neurons;
 	ActivationFunctions::ActivationFunction ActivationFunction;
 	size_t OutputLength;
@@ -94,7 +95,8 @@ private:
 
 	NeuralNetwork()
 	{
-
+		ActivationFunction = ActivationFunctions::Sigmoid;
+		OutputLength = 0;
 	}
 
 public:
@@ -275,7 +277,7 @@ public:
 		{
 			layerIterator--;
 
-			gradientLayers.push_front(CalculateLayerGradients(layerI, layerIterator, neuronCosts, networkLinears, networkActivations));
+			gradientLayers.push_front(CalculateLayerGradients(layerI, &layerIterator, neuronCosts, networkLinears, networkActivations));
 
 			layerI--;
 		} while (layerIterator != Neurons.begin());
@@ -294,13 +296,15 @@ private:
 	/// <param name="networkLinears"></param>
 	/// <param name="networkActivations"></param>
 	/// <returns></returns>
-	list<Neuron> CalculateLayerGradients(size_t layerI, list<list<Neuron>>::iterator layerIterator, float** networkCosts, float** networkLinears, float** networkActivations)
+	list<Neuron> CalculateLayerGradients(size_t layerI, list<list<Neuron>>::iterator* layerIterator, float** networkCosts, float** networkLinears, float** networkActivations)
 	{
-		list<Neuron> layer = (*layerIterator);
+		list<Neuron> layer = (**layerIterator);
 		size_t layerLength = layer.size();
 
 		NeuronGradientsCalculator* gradientCalculators = new NeuronGradientsCalculator[layerLength];
 		thread* threads = new thread[layerLength];
+		list<Neuron>::iterator* neuronIterators = new list<Neuron>::iterator[layerLength];
+
 		auto neuronIterator = layer.begin();
 		size_t i = 0;
 		while (neuronIterator != layer.end())
@@ -308,7 +312,9 @@ private:
 			float linearFunction = networkLinears[layerI - 1][i];
 			float cost = networkCosts[layerI][i];
 
-			threads[i] = thread(std::ref(gradientCalculators[i]), neuronIterator, networkCosts, networkActivations, linearFunction, cost, ActivationFunction);
+			neuronIterators[i] = neuronIterator;
+
+			threads[i] = thread(std::ref(gradientCalculators[i]), &neuronIterators[i], networkCosts, networkActivations, linearFunction, cost, ActivationFunction);
 
 			neuronIterator++;
 			i++;
@@ -323,6 +329,7 @@ private:
 
 		delete[] gradientCalculators;
 		delete[] threads;
+		delete[] neuronIterators;
 
 		return gradientsLayer;
 	}
@@ -332,12 +339,12 @@ private:
 	public:
 		Neuron outputGradients;
 
-		void operator()(list<Neuron>::iterator neuronIterator, float** networkCosts, float** networkActivations, float linearFunction, float neuronCost, ActivationFunctions::ActivationFunction activationFunction)
+		void operator()(list<Neuron>::iterator* neuronIterator, float** networkCosts, float** networkActivations, float linearFunction, float neuronCost, ActivationFunctions::ActivationFunction activationFunction)
 		{
-			tuple<float, float*, float*> gradients = (*neuronIterator).GetGradients(networkActivations, linearFunction, neuronCost, activationFunction);
+			tuple<float, float*, float*> gradients = (**neuronIterator).GetGradients(networkActivations, linearFunction, neuronCost, activationFunction);
 			outputGradients = Neuron(get<0>(gradients), new size_t[0], new size_t[0], get<1>(gradients));
 
-			NeuronConnectionsInfo* neuronInfo = &neuronIterator->connections;
+			NeuronConnectionsInfo* neuronInfo = &(*neuronIterator)->connections;
 			float* previousActivationsGradients = get<2>(gradients);
 			for (size_t j = 0; j < neuronInfo[0].GetConnectionCount(); j++)
 			{

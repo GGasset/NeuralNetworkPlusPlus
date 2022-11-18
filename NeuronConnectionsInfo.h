@@ -33,13 +33,12 @@ public:
 
 	NeuronConnectionsInfo operator=(const NeuronConnectionsInfo& in)
 	{
-		NeuronConnectionsInfo out;
-		out.connectionCount = in.connectionCount;
-		out.Xs = in.Xs;
-		out.Ys = in.Ys;
-		out.Weights = in.Weights;
-		out.Bias = in.Bias;
-		return out;
+		connectionCount = in.connectionCount;
+		Xs = in.Xs;
+		Ys = in.Ys;
+		Weights = in.Weights;
+		Bias = in.Bias;
+		return *this;
 	}
 
 	NeuronConnectionsInfo() {
@@ -65,7 +64,7 @@ public:
 		}
 		if (isThereARemainingThread)
 			threads[nThreads] = thread(std::ref(linearFunctionCalculators[nThreads]), this, networkActivations, connectionsPerThread * nThreads, remainingConnections);
-
+		
 		float linearFunction = Bias;
 		for (size_t i = 0; i < totalThreads; i++)
 		{
