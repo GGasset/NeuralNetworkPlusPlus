@@ -71,6 +71,9 @@ public:
 			threads[i].join();
 		}
 
+		delete[] threads;
+		delete[] weightsGenerators;
+
 		return output;
 	}
 
