@@ -17,7 +17,7 @@ public:
 
 	float Bias;
 
-	const size_t connectionsPerThread = 350;
+	const size_t connectionsPerThread = 50;
 
 	NeuronConnectionsInfo(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
