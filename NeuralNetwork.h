@@ -14,6 +14,9 @@ public:
 	size_t OutputLength;
 
 public:
+	/// <summary>
+	/// Remember to .Dispose() this network
+	/// </summary>
 	NeuralNetwork(size_t shapeLength, size_t shape[], bool deleteShapeArr, ActivationFunctions::ActivationFunction activationFunction, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		LayerInstantiator* layerInstantiators = new LayerInstantiator[shapeLength - 1];
@@ -439,6 +442,23 @@ public:
 	size_t GetNetworkOutputLength()
 	{
 		return OutputLength;
+	}
+
+	void Dispose()
+	{
+		auto layerIterator = Neurons.begin();
+		while (layerIterator != Neurons.end())
+		{
+			auto neuronIterator = (*layerIterator).begin();
+			while (neuronIterator != (*layerIterator).end())
+			{
+				(*neuronIterator).connections.Dispose();
+
+				neuronIterator++;
+			}
+
+			layerIterator++;
+		}
 	}
 };
 
