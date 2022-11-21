@@ -235,6 +235,7 @@ public:
 			{
 				testCost += Cost::GetCostOf(OutputLength, Execute(testX[i]), testY[i], costFunction);
 			}
+			testCost /= testDataLength;
 		}
 	}
 
