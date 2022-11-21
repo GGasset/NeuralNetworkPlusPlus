@@ -7,8 +7,8 @@ using namespace std;
 
 int main()
 {
-	size_t shape[] = { 1, 1000, 600, 400, 300, 150, 50, 10, 1};
-	NeuralNetwork n = NeuralNetwork(7, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
+	size_t shape[] = { 1, 150, 100, 5, 1};
+	NeuralNetwork n = NeuralNetwork(5, shape, false,ActivationFunctions::Sigmoid, 1, -.5, 0, .5);
 
 	float X[] = {3.5f};
 	
