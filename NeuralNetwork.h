@@ -4,6 +4,7 @@ using namespace std;
 #include "Neuron.h"
 #include <list>
 #include <tuple>
+#include <cmath>
 
 #pragma once
 class NeuralNetwork
@@ -198,6 +199,45 @@ private:
 	};
 
 public:
+	/// <param name="trainUntilTestCostIsBelow">Put a high value to iterate once over all data</param>
+	void SupervisedTrain(float** X, float** Y, size_t dataLength, size_t batchSize, Cost::CostFunction costFunction, float learningRate, bool freeData, double testSize = 0.2, double trainUntilTestCostIsBelow = .15)
+	{
+		size_t trainSize = std::fmaxf(0, std::fminf(1, testSize));
+		trainSize = 1 - testSize;
+
+		DataManipulation::ShuffleData(X, dataLength);
+		DataManipulation::ShuffleData(Y, dataLength);
+
+		tuple<float**, float**, size_t> slicedX = DataManipulation::SliceData(X, dataLength, trainSize, freeData);
+		float** trainX = get<0>(slicedX);
+		float** testX = get<1>(slicedX);
+
+		tuple<float**, float**, size_t> slicedY = DataManipulation::SliceData(Y, dataLength, trainSize, freeData);
+		float** trainY = get<0>(slicedY);
+		float** testY = get<1>(slicedY);
+
+		size_t trainDataLength = min(get<2>(slicedX), get<2>(slicedY));
+		size_t testDataLength = dataLength - max(get<2>(slicedX), get<2>(slicedY));
+
+		float testCost = 50E30f;
+		size_t batchCount = trainDataLength / batchSize;
+		size_t lastBatchSize = trainDataLength % batchSize;
+		while (testCost > trainUntilTestCostIsBelow)
+		{
+			for (size_t i = 0; i < batchCount; i++)
+			{
+				SupervisedLearningBatch(trainX, trainY, batchSize * i, batchSize, costFunction, learningRate);
+			}
+			SupervisedLearningBatch(trainX, trainY, batchCount * batchSize, lastBatchSize, costFunction, learningRate);
+
+			testCost = 0;
+			for (size_t i = 0; i < testDataLength; i++)
+			{
+				testCost += Cost::GetCostOf(OutputLength, Execute(testX[i]), testY[i], costFunction);
+			}
+		}
+	}
+
 	void SupervisedLearningBatch(float** X, float** Y, size_t startingIndex, size_t batchLength, Cost::CostFunction costFunction, float learningRate)
 	{
 		thread* threads = new thread[batchLength];
