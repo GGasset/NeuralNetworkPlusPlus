@@ -1,29 +1,30 @@
-#include <list>
+#include <cmath>
 
 #pragma once
 class DataManipulation
 {
 public:
-	static void AddLists(std::list<size_t>* first, std::list<size_t> second)
+	/// <returns>tuple<first slice, second slice, first slice length></returns>
+	static tuple<float**, float**, size_t> SliceData(float** data, size_t dataLength, double slicePoint)
 	{
-		std::list<size_t>::iterator secondListIter = second.begin();
-		while (secondListIter != second.end())
+		slicePoint = fabs(slicePoint);
+		slicePoint *= 1 + (dataLength - 1) * slicePoint > 1;
+		slicePoint = (double)(size_t)(slicePoint);
+
+		float** firstSlice = new float* [slicePoint];
+		float** secondSlice = new float* [dataLength - (size_t)slicePoint];
+
+		for (size_t i = 0; i < slicePoint; i++)
 		{
-			first[0].push_back((*secondListIter));
-
-			secondListIter++;
+			firstSlice[i] = data[i];
 		}
-	}
 
-	static void AddLists(std::list<float>* first, std::list<float> second)
-	{
-		std::list<float>::iterator secondListIter = second.begin();
-		while (secondListIter != second.end())
+		for (size_t i = 0; i < dataLength - slicePoint; i++)
 		{
-			first[0].push_back((*secondListIter));
-
-			secondListIter++;
+			secondSlice[i] = data[(size_t)slicePoint + i];
 		}
+
+		tuple<float**, float**, size_t> output(firstSlice, secondSlice, (size_t)slicePoint);
+		return output;
 	}
 };
-
