@@ -4,9 +4,18 @@
 class DataManipulation
 {
 public:
-	static float** ShuffleData(float** data, size_t dataLength, bool deleteOldArray)
+	static void ShuffleData(float** data, size_t dataLength)
 	{
+		for (size_t i = 0; i < dataLength; i++)
+		{
+			int randomI = rand() % (dataLength + 1);
 
+			float* a = data[i];
+			float* b = data[randomI];
+
+			data[randomI] = a;
+			data[i] = b;
+		}
 	}
 
 	/// <returns>tuple<first slice, second slice, first slice length></returns>
