@@ -25,14 +25,19 @@ public:
 		}
 	}
 
-	static float RELUActivation(float linearFunc)
+	static float RELUActivation(float x)
 	{
-		return fmaxf(0, linearFunc);
+		return fmaxf(0, x);
 	}
 
-	static float SigmoidActivation(float linearFunc)
+	static float SigmoidActivation(float x)
 	{
-		return 1 / (1 + exp(-linearFunc));
+		return 1 / (1 + exp(-x));
+	}
+
+	static float TanhActivation(float x)
+	{
+		return sinf(x) / cosf(x);
 	}
 };
 
