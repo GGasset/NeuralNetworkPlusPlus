@@ -13,14 +13,16 @@ public:
 		Tanh,
 	};
 
-	static float Activate(float linearFunc, ActivationFunction activationType)
+	static float Activate(float x, ActivationFunction activationType)
 	{
 		switch (activationType)
 		{
 		case ActivationFunctions::RELU:
-			return RELUActivation(linearFunc);
+			return RELUActivation(x);
 		case ActivationFunctions::Sigmoid:
-			return SigmoidActivation(linearFunc);
+			return SigmoidActivation(x);
+		case Tanh:
+			return TanhActivation(x);
 		default:
 			return NULL;
 		}
