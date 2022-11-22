@@ -2,37 +2,38 @@
 class NeuronStoredValues
 {
 public:
-	//All neuron types
+	//All neuron types:
 
 	float LinearFunction, OutputActivation;
 
 
-	//LSTM and recurent
+	//LSTM and recurent:
 
 	float InitialHiddenState;
+	float HiddenLinear;
 	float HiddenState;
 
 
-	//LSTM
+	//LSTM:
 
 	float InitialCellState;
 	float CellState;
 
-	//Hidden state
+	//	Hidden state calculations:
 
-	float HiddenStateSigmoid;
-	float HiddenStateTanh;
+	float LinearHiddenStateSigmoid;
+	float LinearHiddenStateTanh;
 
 
-	//Gates:
+	//	Gates:
 	
-	//	Forget
+	//		Forget
 
 	float ForgetWeightMultiplication;
 	float ForgetGateMultiplication;
 
 
-	//	Store
+	//		Store
 
 	float StoreSigmoidWeightMultiplication;
 	float StoreTanhWeightMultiplication;
@@ -40,7 +41,7 @@ public:
 	float StoreGateAddition;
 
 
-	//	Output
+	//		Output
 	float CellStateTanh;
 	float OutputWeightMultiplication;
 };
