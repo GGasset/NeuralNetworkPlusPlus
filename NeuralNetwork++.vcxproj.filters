@@ -45,7 +45,7 @@
     <ClCompile Include="LSTMNeuron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NeuronStoredExecutionValues.cpp">
+    <ClCompile Include="NeuronStoredValues.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,7 +77,7 @@
     <ClInclude Include="LSTMNeuron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NeuronStoredExecutionValues.h">
+    <ClInclude Include="NeuronStoredValues.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
