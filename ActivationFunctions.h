@@ -10,6 +10,7 @@ public:
 	{
 		RELU,
 		Sigmoid,
+		Tanh,
 	};
 
 	static float Activate(float linearFunc, ActivationFunction activationType)
