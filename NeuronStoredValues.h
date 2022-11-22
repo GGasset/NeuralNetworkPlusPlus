@@ -21,8 +21,8 @@ public:
 
 	//	Hidden state calculations:
 
-	float LinearHiddenStateSigmoid;
-	float LinearHiddenStateTanh;
+	float HiddenLinearStateSigmoid;
+	float HiddenLinearStateTanh;
 
 
 	//	Gates:
