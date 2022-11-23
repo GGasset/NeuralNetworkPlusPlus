@@ -44,8 +44,15 @@ public:
 		output.StoreSigmoidWeightMultiplication = output.HiddenLinearSigmoid * StoreGateSigmoidWeight;
 		output.StoreTanhWeightMultiplication = output.HiddenLinearTanh * StoreGateTanhWeight;
 		output.StoreGateMultiplication = output.StoreSigmoidWeightMultiplication * output.StoreTanhWeightMultiplication;
-		
-		cellState = output.StoreGateAddition = output.StoreGateMultiplication + cellState;
+		output.CellState = cellState = output.StoreGateAddition = output.StoreGateMultiplication + cellState;
+
+		//Output Gate
+		output.CellStateTanh = ActivationFunctions::TanhActivation(cellState);
+		output.OutputWeightMultiplication = output.HiddenLinearSigmoid * OutputGateWeight;
+
+		output.OutputActivation = output.HiddenState = output.CellStateTanh * output.OutputWeightMultiplication;
+
+		return output;
 	}
 };
 
