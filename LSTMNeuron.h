@@ -37,9 +37,15 @@ public:
 
 
 		//Forget gate
-
 		output.ForgetWeightMultiplication = output.HiddenLinearSigmoid * ForgetGateWeight;
 		cellState = output.ForgetGateMultiplication = output.ForgetWeightMultiplication * cellState;
+
+		//Store gate
+		output.StoreSigmoidWeightMultiplication = output.HiddenLinearSigmoid * StoreGateSigmoidWeight;
+		output.StoreTanhWeightMultiplication = output.HiddenLinearTanh * StoreGateTanhWeight;
+		output.StoreGateMultiplication = output.StoreSigmoidWeightMultiplication * output.StoreTanhWeightMultiplication;
+		
+		cellState = output.StoreGateAddition = output.StoreGateMultiplication + cellState;
 	}
 };
 
