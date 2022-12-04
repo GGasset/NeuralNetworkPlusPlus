@@ -101,7 +101,7 @@ public:
 	/// <param name="activationGradient"></param>
 	/// <param name="networkActivations"></param>
 	/// <returns>tuple(weightGradients)</returns>
-	tuple<float*> GetGradients(float activationGradient, float** networkActivations, float** networkCosts)
+	tuple<float*> GetGradients(float biasGradient, float** networkActivations, float** networkCosts)
 	{
 		size_t nThreads = connectionCount / connectionsPerThread;
 		size_t remainingConnections = connectionCount % connectionsPerThread;
@@ -114,12 +114,12 @@ public:
 		float* weightGradients = new float[connectionCount];
 		for (size_t i = 0; i < nThreads; i++)
 		{
-			threads[i] = thread(std::ref(gradientCalculators[i]), this, activationGradient, networkActivations, weightGradients, networkCosts,
+			threads[i] = thread(std::ref(gradientCalculators[i]), this, biasGradient, networkActivations, weightGradients, networkCosts,
 				connectionsPerThread * i, connectionsPerThread);
 		}
 		if (isThereARemainingThread)
 		{
-			threads[nThreads] = thread(std::ref(gradientCalculators[nThreads]), this, activationGradient, networkActivations, weightGradients, networkCosts,
+			threads[nThreads] = thread(std::ref(gradientCalculators[nThreads]), this, biasGradient, networkActivations, weightGradients, networkCosts,
 				connectionsPerThread * nThreads, remainingConnections);
 		}
 
