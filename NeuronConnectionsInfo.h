@@ -98,7 +98,7 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="activationGradient"></param>
+	/// <param name="biasGradient"></param>
 	/// <param name="networkActivations"></param>
 	/// <returns>tuple(weightGradients)</returns>
 	tuple<float*> GetGradients(float biasGradient, float** networkActivations, float** networkCosts)
@@ -139,13 +139,13 @@ private:
 	class GradientCalculator
 	{
 	public:
-		void operator()(NeuronConnectionsInfo* neuronConnectionsInfo, float activationGradient, float** networkActivations, float* outputWeightGradients, float** networkCosts,
+		void operator()(NeuronConnectionsInfo* neuronConnectionsInfo, float biasGradient, float** networkActivations, float* outputWeightGradients, float** networkCosts,
 			size_t startingI, size_t connectionsToCalculate)
 		{
 			for (int i = startingI; i < startingI + connectionsToCalculate; i++)
 			{
-				outputWeightGradients[i] = activationGradient * networkActivations[neuronConnectionsInfo[0].Xs[i]][neuronConnectionsInfo[0].Ys[i]];
-				networkCosts[neuronConnectionsInfo->Xs[i]][neuronConnectionsInfo->Ys[i]] = activationGradient * neuronConnectionsInfo[0].Weights[i];
+				outputWeightGradients[i] = biasGradient * networkActivations[neuronConnectionsInfo[0].Xs[i]][neuronConnectionsInfo[0].Ys[i]];
+				networkCosts[neuronConnectionsInfo->Xs[i]][neuronConnectionsInfo->Ys[i]] = biasGradient * neuronConnectionsInfo[0].Weights[i];
 			}
 		}
 	};
