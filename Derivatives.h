@@ -16,6 +16,8 @@ public:
 			return RELUDerivative(linearFunction);
 		case ActivationFunctions::Sigmoid:
 			return SigmoidDerivative(linearFunction);
+		case ActivationFunctions::None:
+			return 1;
 		default:
 			return NULL;
 		}
@@ -32,7 +34,9 @@ public:
 		}
 	}
 
+
 	// Activation function derivatives
+
 	static float RELUDerivative(float linearFunction)
 	{
 		return linearFunction * (linearFunction >= 0);
@@ -43,7 +47,9 @@ public:
 		return ActivationFunctions::SigmoidActivation(linearFunction) * (1 - ActivationFunctions::SigmoidActivation(linearFunction));
 	}
 
+
 	//Cost derivatives
+
 	static float* SquaredMeanDerivative(size_t networkOutputLength, float* networkOutput, float* Y)
 	{
 		float* output = new float[networkOutputLength];
@@ -57,6 +63,19 @@ public:
 	static float SquaredMeanDerivative(float neuronOutput, float Y)
 	{
 		return 2 * (neuronOutput - Y);
+	}
+
+
+	//Common derivatives
+
+	static float MultiplicationDerivative(float a, float b, float Da, float Db)
+	{
+		return a * Da + b * Db;
+	}
+
+	static float DivisionDerivative(float a, float b, float Da, float Db)
+	{
+		return (Da * b - Db * a) / (b * b);
 	}
 };
 

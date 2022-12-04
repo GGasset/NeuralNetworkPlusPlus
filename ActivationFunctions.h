@@ -8,6 +8,7 @@ class ActivationFunctions
 public:
 	enum ActivationFunction
 	{
+		None,
 		RELU,
 		Sigmoid,
 		Tanh,
@@ -23,6 +24,8 @@ public:
 			return SigmoidActivation(x);
 		case Tanh:
 			return TanhActivation(x);
+		case None:
+			return x;
 		default:
 			return NULL;
 		}
