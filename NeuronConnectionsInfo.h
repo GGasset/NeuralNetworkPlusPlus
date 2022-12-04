@@ -100,8 +100,8 @@ public:
 	/// </summary>
 	/// <param name="activationGradient"></param>
 	/// <param name="networkActivations"></param>
-	/// <returns>tuple(weightGradients, previousActivationGradients)</returns>
-	tuple<float*, float*> GetGradients(float activationGradient, float** networkActivations)
+	/// <returns>tuple(weightGradients)</returns>
+	tuple<float*> GetGradients(float activationGradient, float** networkActivations, float** networkCosts)
 	{
 		size_t nThreads = connectionCount / connectionsPerThread;
 		size_t remainingConnections = connectionCount % connectionsPerThread;
@@ -112,15 +112,14 @@ public:
 		thread* threads = new thread[totalThreads];
 
 		float* weightGradients = new float[connectionCount];
-		float* previousActivationsGradients = new float[connectionCount];
 		for (size_t i = 0; i < nThreads; i++)
 		{
-			threads[i] = thread(std::ref(gradientCalculators[i]), this, activationGradient, networkActivations, weightGradients, previousActivationsGradients,
+			threads[i] = thread(std::ref(gradientCalculators[i]), this, activationGradient, networkActivations, weightGradients, networkCosts,
 				connectionsPerThread * i, connectionsPerThread);
 		}
 		if (isThereARemainingThread)
 		{
-			threads[nThreads] = thread(std::ref(gradientCalculators[nThreads]), this, activationGradient, networkActivations, weightGradients, previousActivationsGradients,
+			threads[nThreads] = thread(std::ref(gradientCalculators[nThreads]), this, activationGradient, networkActivations, weightGradients, networkCosts,
 				connectionsPerThread * nThreads, remainingConnections);
 		}
 
@@ -132,7 +131,7 @@ public:
 		delete[] gradientCalculators;
 		delete[] threads;
 
-		tuple<float*, float*> output(weightGradients, previousActivationsGradients);
+		tuple<float*> output(weightGradients);
 		return output;
 	}
 
@@ -140,13 +139,13 @@ private:
 	class GradientCalculator
 	{
 	public:
-		void operator()(NeuronConnectionsInfo* neuronConnectionsInfo, float activationGradient, float** networkActivations, float* outputWeightGradients, float* outputPreviousActivationsGradients,
+		void operator()(NeuronConnectionsInfo* neuronConnectionsInfo, float activationGradient, float** networkActivations, float* outputWeightGradients, float** networkCosts,
 			size_t startingI, size_t connectionsToCalculate)
 		{
 			for (int i = startingI; i < startingI + connectionsToCalculate; i++)
 			{
 				outputWeightGradients[i] = activationGradient * networkActivations[neuronConnectionsInfo[0].Xs[i]][neuronConnectionsInfo[0].Ys[i]];
-				outputPreviousActivationsGradients[i] = activationGradient * neuronConnectionsInfo[0].Weights[i];
+				networkCosts[neuronConnectionsInfo->Xs[i]][neuronConnectionsInfo->Ys[i]] = activationGradient * neuronConnectionsInfo[0].Weights[i];
 			}
 		}
 	};

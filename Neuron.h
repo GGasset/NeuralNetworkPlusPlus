@@ -58,16 +58,15 @@ public:
 	/// <param name="linearFunction"></param>
 	/// <param name="neuronCost"></param>
 	/// <param name="activationType"></param>
-	/// <returns>tuple(biasGradient, weightGradient, previousActivationGradients)</returns>
-	tuple<float, float*, float*> GetGradients(float** networkActivations, float linearFunction, float neuronCost, ActivationFunctions::ActivationFunction activationType)
+	/// <returns>tuple(biasGradient, weightGradient)</returns>
+	tuple<float, float*> GetGradients(float** networkActivations, float linearFunction, float neuronCost, float** networkCosts, ActivationFunctions::ActivationFunction activationType)
 	{
 		float biasGradient = neuronCost * Derivatives::DerivativeOf(linearFunction, activationType);
-		tuple<float*, float*> connectionsGradients = connections.GetGradients(biasGradient, networkActivations);
+		tuple<float*> connectionsGradients = connections.GetGradients(biasGradient, networkActivations, networkCosts);
 
 		float* weightGradients = get<0>(connectionsGradients);
-		float* previousActivationsGradients = get<1>(connectionsGradients);
 
-		tuple<float, float*, float*> output(biasGradient, weightGradients, previousActivationsGradients);
+		tuple<float, float*> output(biasGradient, weightGradients);
 		return output;
 	}
 

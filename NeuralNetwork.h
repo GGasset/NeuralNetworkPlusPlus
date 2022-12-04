@@ -385,16 +385,8 @@ private:
 
 		void operator()(list<Neuron>::iterator* neuronIterator, float** networkCosts, float** networkActivations, float linearFunction, float neuronCost, ActivationFunctions::ActivationFunction activationFunction)
 		{
-			tuple<float, float*, float*> gradients = (**neuronIterator).GetGradients(networkActivations, linearFunction, neuronCost, activationFunction);
+			tuple<float, float*> gradients = (*neuronIterator)->GetGradients(networkActivations, linearFunction, neuronCost, networkCosts, activationFunction);
 			outputGradients = Neuron(get<0>(gradients), new size_t[0], new size_t[0], get<1>(gradients));
-
-			NeuronConnectionsInfo* neuronInfo = &(*neuronIterator)->connections;
-			float* previousActivationsGradients = get<2>(gradients);
-			for (size_t j = 0; j < neuronInfo[0].GetConnectionCount(); j++)
-			{
-				networkCosts[neuronInfo[0].Xs[j]][neuronInfo[0].Ys[j]] -= previousActivationsGradients[j];
-			}
-			delete[] previousActivationsGradients;
 		}
 	};
 
