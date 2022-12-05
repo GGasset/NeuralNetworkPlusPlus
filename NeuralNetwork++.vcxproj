@@ -131,6 +131,7 @@
     <ClCompile Include="Cost.cpp" />
     <ClCompile Include="DataManipulation.cpp" />
     <ClCompile Include="Derivatives.cpp" />
+    <ClCompile Include="INeuron.cpp" />
     <ClCompile Include="LSTMNeuron.cpp" />
     <ClCompile Include="NeuralNetwork++.cpp" />
     <ClCompile Include="Neuron.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Cost.h" />
     <ClInclude Include="DataManipulation.h" />
     <ClInclude Include="Derivatives.h" />
+    <ClInclude Include="INeuron.h" />
     <ClInclude Include="LSTMNeuron.h" />
     <ClInclude Include="Neuron.h" />
     <ClInclude Include="NeuralNetwork.h" />
