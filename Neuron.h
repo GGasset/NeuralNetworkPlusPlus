@@ -62,9 +62,7 @@ public:
 	tuple<float, float*> GetGradients(float** networkActivations, float linearFunction, float neuronCost, float** networkCosts, ActivationFunctions::ActivationFunction activationType)
 	{
 		float biasGradient = neuronCost * Derivatives::DerivativeOf(linearFunction, activationType);
-		tuple<float*> connectionsGradients = connections.GetGradients(biasGradient, networkActivations, networkCosts);
-
-		float* weightGradients = get<0>(connectionsGradients);
+		float* weightGradients = connections.GetGradients(biasGradient, networkActivations, networkCosts);
 
 		tuple<float, float*> output(biasGradient, weightGradients);
 		return output;

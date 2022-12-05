@@ -95,13 +95,8 @@ private:
 	};
 
 public:
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="biasGradient"></param>
-	/// <param name="networkActivations"></param>
-	/// <returns>tuple(weightGradients)</returns>
-	tuple<float*> GetGradients(float biasGradient, float** networkActivations, float** networkCosts)
+	/// <returns>weightGradients</returns>
+	float* GetGradients(float biasGradient, float** networkActivations, float** networkCosts)
 	{
 		size_t nThreads = connectionCount / connectionsPerThread;
 		size_t remainingConnections = connectionCount % connectionsPerThread;
@@ -131,8 +126,7 @@ public:
 		delete[] gradientCalculators;
 		delete[] threads;
 
-		tuple<float*> output(weightGradients);
-		return output;
+		return weightGradients;
 	}
 
 private:
