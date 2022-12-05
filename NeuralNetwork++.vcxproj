@@ -137,6 +137,7 @@
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="NeuronConnectionsInfo.cpp" />
     <ClCompile Include="NeuronStoredValues.cpp" />
+    <ClCompile Include="RNN.cpp" />
     <ClCompile Include="ValueGeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="NeuronConnectionsInfo.h" />
     <ClInclude Include="NeuronStoredValues.h" />
+    <ClInclude Include="RNN.h" />
     <ClInclude Include="ValueGeneration.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
