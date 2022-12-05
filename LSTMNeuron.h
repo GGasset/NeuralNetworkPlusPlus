@@ -54,5 +54,13 @@ public:
 
 		return output;
 	}
+
+	LSTMNeuron* GetGradients(size_t tCount, NeuronStoredValues storedExecution, float neuronCost, float*** networkCosts, float*** networkActivations)
+	{
+		for (size_t t = 0; t < tCount; t++)
+		{
+
+		}
+	}
 };
 
