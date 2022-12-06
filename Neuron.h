@@ -2,16 +2,14 @@
 #include "ActivationFunctions.h"
 #include "Derivatives.h"
 #include <stdlib.h>
-#include <list>
 #include <tuple>
+#include "INeuron.h"
 using namespace std;
 
 #pragma once
-class Neuron
+class Neuron : INeuron
 {
 public:
-	NeuronConnectionsInfo connections;
-
 	Neuron(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
 	{
 		connections = NeuronConnectionsInfo(layerI, previousLayerLength, bias, minWeight, weightClosestTo0, maxWeight);
@@ -33,6 +31,15 @@ public:
 	{
 		tuple<float,float> linearAndActivation = ExecuteStore(neuronActivations, activationType);
 		float output = get<0>(linearAndActivation);
+		return output;
+	}
+
+	NeuronStoredValues RecurrentExecuteStore(float** networkActivations, ActivationFunctions::ActivationFunction activationType)
+	{
+		tuple<float, float> storedValues = ExecuteStore(networkActivations, activationType);
+		NeuronStoredValues output = NeuronStoredValues();
+		output.LinearFunction = get<0>(storedValues);
+		output.OutputActivation = get<1>(storedValues);
 		return output;
 	}
 
