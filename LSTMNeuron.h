@@ -1,13 +1,11 @@
-#include "ValueGeneration.h"
-#include "NeuronConnectionsInfo.h"
+#include "INeuron.h"
 #include "ActivationFunctions.h"
 #include "NeuronStoredValues.h"
 
 #pragma once
-class LSTMNeuron
+class LSTMNeuron : INeuron
 {
 public:
-	NeuronConnectionsInfo connections;
 	float hiddenState, cellState;
 	float ForgetGateWeight, StoreGateSigmoidWeight, StoreGateTanhWeight, OutputGateWeight;
 
@@ -23,7 +21,13 @@ public:
 		OutputGateWeight = ValueGeneration::GenerateWeight(minWeight, weightClosestTo0, maxWeight);
 	}
 
-	NeuronStoredValues ExecuteStore(float** networkActivations)
+	float Execute(float** networkActivations, ActivationFunctions::ActivationFunction activationType = ActivationFunctions::None)
+	{
+		NeuronStoredValues storedExecution = RecurrentExecuteStore(networkActivations, activationType);
+		return storedExecution.OutputActivation;
+	}
+
+	NeuronStoredValues RecurrentExecuteStore(float** networkActivations, ActivationFunctions::ActivationFunction activationType = ActivationFunctions::None)
 	{
 		NeuronStoredValues output = NeuronStoredValues();
 		output.InitialHiddenState = hiddenState;
@@ -55,8 +59,9 @@ public:
 		return output;
 	}
 
-	LSTMNeuron* GetGradients(size_t tCount, NeuronStoredValues storedExecution, float neuronCost, float*** networkCosts, float*** networkActivations)
+	tuple<NeuronConnectionsInfo, float*> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float neuronCost, float*** networkCosts, float*** networkActivations)
 	{
+		// Get Derivatives
 		for (size_t t = 0; t < tCount; t++)
 		{
 
