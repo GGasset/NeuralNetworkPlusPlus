@@ -1,5 +1,6 @@
 #include "NeuronConnectionsInfo.h"
 #include "NeuronStoredValues.h"
+#include "ActivationFunctions.h"
 
 #pragma once
 class INeuron
@@ -13,6 +14,6 @@ public:
 
 	virtual tuple<NeuronConnectionsInfo, float*> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float neuronCost, float*** networkCosts, float*** networkActivations) = 0;
 
-	virtual void ApplyGradients(NeuronConnectionsInfo connections, float* fieldsGradient) = 0;
+	virtual void ApplyGradients(NeuronConnectionsInfo connections, float* fieldsGradient, float learningRate) = 0;
 };
 

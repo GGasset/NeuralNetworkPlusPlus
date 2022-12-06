@@ -1,5 +1,4 @@
 using namespace std;
-#include "ActivationFunctions.h";
 #include "Cost.h"
 #include "Neuron.h"
 #include <list>

@@ -1,9 +1,7 @@
 #include "INeuron.h"
-#include "ActivationFunctions.h"
-#include "NeuronStoredValues.h"
 
 #pragma once
-class LSTMNeuron : INeuron
+class LSTMNeuron : public INeuron
 {
 public:
 	float hiddenState, cellState;

@@ -1,13 +1,10 @@
-#include "NeuronConnectionsInfo.h"
-#include "ActivationFunctions.h"
 #include "Derivatives.h"
 #include <stdlib.h>
-#include <tuple>
 #include "INeuron.h"
 using namespace std;
 
 #pragma once
-class Neuron : INeuron
+class Neuron : public INeuron
 {
 public:
 	Neuron(size_t layerI, size_t previousLayerLength, float bias, float minWeight, float weightClosestTo0, float maxWeight)
@@ -58,6 +55,10 @@ public:
 		return output;
 	}
 
+	tuple<NeuronConnectionsInfo, float*> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float neuronCost, float*** networkCosts, float*** networkActivations)
+	{
+
+	}
 
 	/// <summary>
 	/// 
@@ -73,6 +74,12 @@ public:
 
 		tuple<float, float*> output(biasGradient, weightGradients);
 		return output;
+	}
+
+	void ApplyGradients(NeuronConnectionsInfo connectionsGradients, float* fieldsGradients = NULL, float learningRate)
+	{
+		connections.ApplyGradients(connectionsGradients, learningRate);
+		delete[] fieldsGradients;
 	}
 
 	void ApplyGradients(Neuron gradients, float learningRate)
