@@ -8,14 +8,16 @@
 class Derivatives
 {
 public:
-	static float DerivativeOf(float linearFunction, ActivationFunctions::ActivationFunction ActivationType)
+	static float DerivativeOf(float x, ActivationFunctions::ActivationFunction ActivationType)
 	{
 		switch (ActivationType)
 		{
 		case ActivationFunctions::RELU:
-			return RELUDerivative(linearFunction);
+			return RELUDerivative(x);
 		case ActivationFunctions::Sigmoid:
-			return SigmoidDerivative(linearFunction);
+			return SigmoidDerivative(x);
+		case ActivationFunctions::Tanh:
+			return TanhDerivative(x);
 		case ActivationFunctions::None:
 			return 1;
 		default:
@@ -37,14 +39,20 @@ public:
 
 	// Activation function derivatives
 
-	static float RELUDerivative(float linearFunction)
+	static float RELUDerivative(float x)
 	{
-		return linearFunction * (linearFunction >= 0);
+		return x * (x >= 0);
 	}
 
-	static float SigmoidDerivative(float linearFunction)
+	static float SigmoidDerivative(float x)
 	{
-		return ActivationFunctions::SigmoidActivation(linearFunction) * (1 - ActivationFunctions::SigmoidActivation(linearFunction));
+		return ActivationFunctions::SigmoidActivation(x) * (1 - ActivationFunctions::SigmoidActivation(x));
+	}
+
+	static float TanhDerivative(float x)
+	{
+		float bottomDerivative = expDerivative(-2 * x);
+		return -DivisionDerivative(2, 1 + exp(-2 * x), 0, bottomDerivative);
 	}
 
 
@@ -76,6 +84,11 @@ public:
 	static float DivisionDerivative(float a, float b, float Da, float Db)
 	{
 		return (Da * b - Db * a) / (b * b);
+	}
+
+	static float expDerivative(float x)
+	{
+		return exp(x);
 	}
 };
 
