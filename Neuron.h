@@ -55,11 +55,38 @@ public:
 		return output;
 	}
 
-	tuple<NeuronConnectionsInfo, float*> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float neuronCost, float*** networkCosts, float*** networkActivations)
+	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCost, float*** networkCosts, float*** networkActivations,
+		ActivationFunctions::ActivationFunction activationType)
 	{
+		NeuronConnectionsInfo* gradients = new NeuronConnectionsInfo[tCount];
+		std::thread* threads = new thread[tCount];
+		for (size_t t = 0; t < tCount; t++)
+		{
+			threads[t] = thread(std::ref(gradients[t]), this, gradients, t, storedExecution, networkActivations, neuronCost, networkCosts, activationType);
+		}
 
+		for (size_t t = 0; t < tCount; t++)
+		{
+			threads[t].join();
+		}
+
+		tuple<NeuronConnectionsInfo*, float**> output(gradients, new float*[0]);
+		return output;
 	}
 
+private:
+	class GradientCalculator
+	{
+		void operator()(Neuron* neuron, NeuronConnectionsInfo* output, size_t outputI, NeuronStoredValues& storedExecution, float** networkActivations, float neuronCost, float** networkCosts,
+						ActivationFunctions::ActivationFunction activationType)
+		{
+			tuple<float, float*> gradients = neuron->GetGradients(networkActivations, storedExecution.LinearFunction, neuronCost, networkCosts, activationType);
+			output[outputI].Bias = get<0>(gradients);
+			output[outputI].Weights = get<1>(gradients);
+		}
+	};
+
+public:
 	/// <summary>
 	/// 
 	/// </summary>
@@ -76,9 +103,14 @@ public:
 		return output;
 	}
 
-	void ApplyGradients(NeuronConnectionsInfo connectionsGradients, float* fieldsGradients = NULL, float learningRate)
+	void ApplyGradients(size_t tCount, NeuronConnectionsInfo* connectionsGradients, float** fieldsGradients, float learningRate)
 	{
-		connections.ApplyGradients(connectionsGradients, learningRate);
+		for (size_t i = 0; i < tCount; i++)
+		{
+			connections.ApplyGradients(connectionsGradients[i], learningRate);
+			delete[] fieldsGradients[i];
+		}
+		delete[] connectionsGradients;
 		delete[] fieldsGradients;
 	}
 
