@@ -69,11 +69,17 @@ public:
 		}
 
 		delete[] derivatives;
+		delete[] threads;
 		tuple<NeuronConnectionsInfo*, float**> output;
 		return output;
 	}
 
 private:
+	class DerivativeCalculator
+	{
+
+	};
+
 	NeuronStoredValues GetDerivatives(NeuronStoredValues executionResults)
 	{
 		NeuronStoredValues derivatives = NeuronStoredValues();
