@@ -17,5 +17,7 @@ public:
 																		ActivationFunctions::ActivationFunction activationType) = 0;
 
 	virtual void ApplyGradients(size_t tCount, NeuronConnectionsInfo* connections, float** fieldsGradient, float learningRate) = 0;
+
+	virtual void DeleteMemory() = 0;
 };
 
