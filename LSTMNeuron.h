@@ -57,13 +57,54 @@ public:
 		return output;
 	}
 
-	tuple<NeuronConnectionsInfo, float*> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float neuronCost, float*** networkCosts, float*** networkActivations)
+	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCost, float*** networkCosts, float*** networkActivations)
 	{
+		NeuronStoredValues* derivatives = new NeuronStoredValues[tCount];
+		std::thread* threads = new std::thread[tCount];
+
 		// Get Derivatives
 		for (size_t t = 0; t < tCount; t++)
 		{
-
+			
 		}
+
+		delete[] derivatives;
+		tuple<NeuronConnectionsInfo*, float**> output;
+		return output;
+	}
+
+private:
+	NeuronStoredValues GetDerivatives(NeuronStoredValues executionResults)
+	{
+		NeuronStoredValues derivatives = NeuronStoredValues();
+
+		derivatives.HiddenLinearSigmoid = Derivatives::SigmoidDerivative(executionResults.HiddenLinear);
+
+		derivatives.ForgetWeightMultiplication = executionResults.HiddenLinearSigmoid * derivatives.HiddenLinearSigmoid;
+
+		derivatives.ForgetGateMultiplication =
+			Derivatives::MultiplicationDerivative
+			(
+				executionResults.ForgetWeightMultiplication, executionResults.InitialCellState,
+				derivatives.ForgetWeightMultiplication, 1
+			);
+
+		derivatives.HiddenLinearTanh = Derivatives::TanhDerivative(executionResults.HiddenLinear);
+
+		derivatives.StoreSigmoidWeightMultiplication = derivatives.ForgetWeightMultiplication;
+
+		derivatives.StoreTanhWeightMultiplication = executionResults.HiddenLinearTanh * derivatives.HiddenLinearTanh;
+
+		derivatives.StoreGateMultiplication =
+			Derivatives::MultiplicationDerivative
+			(
+				executionResults.StoreSigmoidWeightMultiplication, executionResults.StoreTanhWeightMultiplication,
+				derivatives.StoreSigmoidWeightMultiplication, derivatives.StoreTanhWeightMultiplication
+			);
+		
+
+
+		derivatives.OutputWeightMultiplication = Derivatives::MultiplicationDerivative(executionResults.HiddenLinearSigmoid, executionResults.CellStateTanh, );
 	}
 };
 
