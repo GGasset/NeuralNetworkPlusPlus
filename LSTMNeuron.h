@@ -57,7 +57,7 @@ public:
 		return output;
 	}
 
-	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCosts, float*** networkCosts, float*** networkActivations)
+	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues* storedExecution, float* neuronCosts, float*** networkCosts, float*** networkActivations)
 	{
 		NeuronStoredValues* derivatives = new NeuronStoredValues[tCount];
 		std::thread* threads = new std::thread[tCount];
@@ -77,10 +77,13 @@ public:
 private:
 	class DerivativeCalculator
 	{
-
+		void operator()(LSTMNeuron* neuron, size_t i, NeuronStoredValues* executionResults, NeuronStoredValues* derivatives)
+		{
+			derivatives[i] = neuron->GetDerivatives(executionResults[i]);
+		}
 	};
 
-	NeuronStoredValues GetDerivatives(NeuronStoredValues executionResults)
+	NeuronStoredValues GetDerivatives(NeuronStoredValues& executionResults)
 	{
 		NeuronStoredValues derivatives = NeuronStoredValues();
 
