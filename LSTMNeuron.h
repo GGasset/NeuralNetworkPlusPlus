@@ -77,9 +77,9 @@ public:
 private:
 	class DerivativeCalculator
 	{
-		void operator()(LSTMNeuron* neuron, size_t i, NeuronStoredValues* executionResults, NeuronStoredValues* derivatives)
+		void operator()(LSTMNeuron* neuron, size_t t, NeuronStoredValues* executionResults, NeuronStoredValues* derivatives)
 		{
-			derivatives[i] = neuron->GetDerivatives(executionResults[i]);
+			derivatives[t] = neuron->GetDerivatives(executionResults[t]);
 		}
 	};
 
