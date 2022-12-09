@@ -55,7 +55,7 @@ public:
 		return output;
 	}
 
-	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCost, float*** networkCosts, float*** networkActivations,
+	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCosts, float*** networkCosts, float*** networkActivations,
 		ActivationFunctions::ActivationFunction activationType)
 	{
 		NeuronConnectionsInfo* gradients = new NeuronConnectionsInfo[tCount];

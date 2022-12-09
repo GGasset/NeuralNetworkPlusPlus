@@ -13,7 +13,7 @@ public:
 
 	virtual NeuronStoredValues RecurrentExecuteStore(float** networkActivations, ActivationFunctions::ActivationFunction activationType) = 0;
 
-	virtual tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCost, float*** networkCosts, float*** networkActivations,
+	virtual tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCosts, float*** networkCosts, float*** networkActivations,
 																		ActivationFunctions::ActivationFunction activationType) = 0;
 
 	virtual void ApplyGradients(size_t tCount, NeuronConnectionsInfo* connections, float** fieldsGradient, float learningRate) = 0;
