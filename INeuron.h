@@ -1,6 +1,7 @@
 #include "NeuronConnectionsInfo.h"
 #include "NeuronStoredValues.h"
 #include "ActivationFunctions.h"
+#include "Derivatives.h"
 
 #pragma once
 class INeuron
