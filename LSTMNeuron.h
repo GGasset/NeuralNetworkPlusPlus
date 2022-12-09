@@ -80,6 +80,8 @@ private:
 
 		derivatives.HiddenLinearSigmoid = Derivatives::SigmoidDerivative(executionResults.HiddenLinear);
 
+		// Forget Gate
+
 		derivatives.ForgetWeightMultiplication = executionResults.HiddenLinearSigmoid * derivatives.HiddenLinearSigmoid;
 
 		derivatives.ForgetGateMultiplication =
@@ -88,6 +90,8 @@ private:
 				executionResults.ForgetWeightMultiplication, executionResults.InitialCellState,
 				derivatives.ForgetWeightMultiplication, 1
 			);
+
+		// Store Gate
 
 		derivatives.HiddenLinearTanh = Derivatives::TanhDerivative(executionResults.HiddenLinear);
 
@@ -102,9 +106,20 @@ private:
 				derivatives.StoreSigmoidWeightMultiplication, derivatives.StoreTanhWeightMultiplication
 			);
 		
+		derivatives.StoreGateAddition = derivatives.ForgetGateMultiplication + derivatives.StoreGateMultiplication;
 
+		// Output Gate
 
-		derivatives.OutputWeightMultiplication = Derivatives::MultiplicationDerivative(executionResults.HiddenLinearSigmoid, executionResults.CellStateTanh, );
+		derivatives.CellStateTanh = Derivatives::TanhDerivative(executionResults.CellState);
+
+		derivatives.OutputWeightMultiplication = derivatives.ForgetWeightMultiplication;
+
+		derivatives.OutputWeightMultiplication = 
+			Derivatives::MultiplicationDerivative
+			(
+				executionResults.HiddenLinearSigmoid, executionResults.CellStateTanh, 
+				derivatives.OutputWeightMultiplication, derivatives.CellStateTanh
+			);
 	}
 };
 
