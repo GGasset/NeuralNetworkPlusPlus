@@ -59,13 +59,27 @@ public:
 
 	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues* storedExecution, float* neuronCosts, float*** networkCosts, float*** networkActivations)
 	{
-		NeuronStoredValues* derivatives = new NeuronStoredValues[tCount];
 		std::thread* threads = new std::thread[tCount];
 
 		// Get Derivatives
+		NeuronStoredValues* derivatives = new NeuronStoredValues[tCount];
+		DerivativeCalculator* derivativeCalculators = new DerivativeCalculator[tCount];
 		for (size_t t = 0; t < tCount; t++)
 		{
-			
+			threads[t] = thread(std::ref(derivativeCalculators[t]), this, t, storedExecution, derivatives);
+		}
+
+		for (size_t t = 0; t < tCount; t++)
+		{
+			threads[t].join();
+		}
+		delete[] derivativeCalculators;
+
+		NeuronConnectionsInfo* connectionsGradients = new NeuronConnectionsInfo[tCount];
+		float** fieldsGradients = new float* [tCount];
+		for (size_t i = 0; i < tCount; i++)
+		{
+
 		}
 
 		delete[] derivatives;
