@@ -200,9 +200,16 @@ private:
 public:
 	void ApplyGradients(size_t tCount, NeuronConnectionsInfo* connectionsGradients, float** fieldsGradients, float learningRate)
 	{
+		std::thread* threads = new std::thread[tCount];
+		GradientApplyer* applyers = new GradientApplyer[tCount];
 		for (size_t t = 0; t < tCount; t++)
 		{
-			connections.ApplyGradients(connectionsGradients[t], )
+			threads[t] = std::thread(std::ref(applyers[t]), connections, t, connectionsGradients, fieldsGradients, learningRate);
+		}
+
+		for (size_t t = 0; t < tCount; t++)
+		{
+			threads[t].join();
 		}
 	}
 
