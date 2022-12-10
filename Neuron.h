@@ -118,5 +118,7 @@ public:
 	{
 		connections.ApplyGradients(gradients.connections, learningRate);
 	}
+
+	void DeleteMemory() {  }
 };
 
