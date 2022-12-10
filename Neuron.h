@@ -62,7 +62,7 @@ public:
 		std::thread* threads = new thread[tCount];
 		for (size_t t = 0; t < tCount; t++)
 		{
-			threads[t] = thread(std::ref(gradients[t]), this, gradients, t, storedExecution, networkActivations, neuronCost, networkCosts, activationType);
+			threads[t] = thread(std::ref(gradients[t]), this, gradients, t, storedExecution, networkActivations, neuronCosts[t], networkCosts, activationType);
 		}
 
 		for (size_t t = 0; t < tCount; t++)
