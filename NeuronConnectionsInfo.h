@@ -30,6 +30,15 @@ public:
 		Bias = bias;
 	}
 
+	NeuronConnectionsInfo(size_t connectionCount, float bias, float* weights, size_t* xs, size_t* ys)
+	{
+		this->connectionCount = connectionCount;
+		Bias = bias;
+		Weights = weights;
+		Xs = xs;
+		Ys = ys;
+	}
+
 	NeuronConnectionsInfo operator=(const NeuronConnectionsInfo& in)
 	{
 		connectionCount = in.connectionCount;
