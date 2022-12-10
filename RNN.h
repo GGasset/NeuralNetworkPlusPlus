@@ -48,5 +48,13 @@ public:
 			}
 		}
 	}
+
+	RNN()
+	{
+		neurons = NULL;
+		activationFunction = ActivationFunctions::None;
+		shapeLength = 0;
+		shape = NULL;
+	}
 };
 
