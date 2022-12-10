@@ -77,6 +77,7 @@ public:
 
 		NeuronConnectionsInfo* connectionsGradients = new NeuronConnectionsInfo[tCount];
 		float** fieldsGradients = new float* [tCount];
+		tuple<float, float> statesGradients(0.0f, 0.0f);
 		for (size_t i = 0; i < tCount; i++)
 		{
 
@@ -96,6 +97,49 @@ private:
 			derivatives[t] = neuron->GetDerivatives(executionResults[t]);
 		}
 	};
+
+	/// <returns>
+	/// tuple(previous hiddenStateGradient, previous cellStateGradient)
+	/// </returns>
+	tuple<float, float> CalculateGradients(size_t t, NeuronConnectionsInfo* connectionsGradients, float** fieldsGradients, NeuronStoredValues& derivatives,
+		float* neuronCost, tuple<float, float> hiddenCellGradients, 
+		float*** networkActivations, float*** networkCosts)
+	{
+		float currentCost = neuronCost[t];
+		currentCost += get<0>(hiddenCellGradients);
+		float outputWeightMultiplicationGradient = currentCost *= derivatives.OutputWeightMultiplication;
+
+		currentCost *= derivatives.CellStateTanh;
+		currentCost += get<1>(hiddenCellGradients);
+
+		currentCost *= derivatives.StoreGateAddition;
+		float storeGateGradient = currentCost;
+
+		storeGateGradient *= derivatives.StoreGateMultiplication;
+		float storeGateTanhWeightGradient = storeGateGradient * derivatives.StoreTanhWeightMultiplication;
+		float storeGateSigmoidWeightGradient = storeGateGradient * derivatives.StoreSigmoidWeightMultiplication;
+
+		currentCost *= derivatives.ForgetGateMultiplication;
+		float previousCellStateCost = currentCost;
+		float forgetGateGradient = currentCost;
+
+		float forgetGateWeightGradient = forgetGateGradient *= derivatives.ForgetWeightMultiplication;
+
+
+		currentCost = outputWeightMultiplicationGradient;
+
+		currentCost *= derivatives.HiddenLinearSigmoid;
+		currentCost *= connections.GetDerivative(networkActivations[t]);
+
+		float previousHiddenStateCost = currentCost;
+
+		float* weightsGradients = connections.GetGradients(currentCost, networkActivations[t], networkCosts[t]);
+		connectionsGradients[t] = NeuronConnectionsInfo(connections.GetConnectionCount(), currentCost, weightsGradients, NULL, NULL);
+
+
+		tuple<float, float> output(previousHiddenStateCost, previousCellStateCost);
+		return output;
+	}
 
 	NeuronStoredValues GetDerivatives(NeuronStoredValues& executionResults)
 	{
@@ -143,6 +187,12 @@ private:
 				executionResults.HiddenLinearSigmoid, executionResults.CellStateTanh, 
 				derivatives.OutputWeightMultiplication, derivatives.CellStateTanh
 			);
+	}
+
+	void DeleteMemory()
+	{
+		hiddenState = 0;
+		cellState = 0;
 	}
 };
 
