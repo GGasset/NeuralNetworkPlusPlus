@@ -55,14 +55,14 @@ public:
 		return output;
 	}
 
-	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues storedExecution, float* neuronCosts, float*** networkCosts, float*** networkActivations,
+	tuple<NeuronConnectionsInfo*, float**> GetRecurrentGradients(size_t tCount, NeuronStoredValues* storedExecution, float* neuronCosts, float*** networkCosts, float*** networkActivations,
 		ActivationFunctions::ActivationFunction activationType)
 	{
 		NeuronConnectionsInfo* gradients = new NeuronConnectionsInfo[tCount];
 		std::thread* threads = new thread[tCount];
 		for (size_t t = 0; t < tCount; t++)
 		{
-			threads[t] = thread(std::ref(gradients[t]), this, gradients, t, storedExecution, networkActivations, neuronCosts[t], networkCosts, activationType);
+			threads[t] = thread(std::ref(gradients[t]), this, gradients, t, storedExecution[t], networkActivations, neuronCosts[t], networkCosts, activationType);
 		}
 
 		for (size_t t = 0; t < tCount; t++)
