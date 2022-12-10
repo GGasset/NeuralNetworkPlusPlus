@@ -212,6 +212,9 @@ public:
 		{
 			threads[t].join();
 		}
+
+		delete[] connectionsGradients;
+		delete[] fieldsGradients;
 	}
 
 private:
