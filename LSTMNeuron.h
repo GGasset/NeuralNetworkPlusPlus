@@ -78,9 +78,11 @@ public:
 		NeuronConnectionsInfo* connectionsGradients = new NeuronConnectionsInfo[tCount];
 		float** fieldsGradients = new float* [tCount];
 		tuple<float, float> statesGradients(0.0f, 0.0f);
-		for (size_t i = 0; i < tCount; i++)
+		for (size_t t = 0; t < tCount; t++)
 		{
-
+			statesGradients = CalculateGradients(t, connectionsGradients, fieldsGradients, derivatives[t],
+				neuronCosts, statesGradients,
+				networkActivations, networkCosts);
 		}
 
 		delete[] derivatives;
@@ -90,22 +92,14 @@ public:
 	}
 
 private:
-	class DerivativeCalculator
-	{
-		void operator()(LSTMNeuron* neuron, size_t t, NeuronStoredValues* executionResults, NeuronStoredValues* derivatives)
-		{
-			derivatives[t] = neuron->GetDerivatives(executionResults[t]);
-		}
-	};
-
 	/// <returns>
 	/// tuple(previous hiddenStateGradient, previous cellStateGradient)
 	/// </returns>
 	tuple<float, float> CalculateGradients(size_t t, NeuronConnectionsInfo* connectionsGradients, float** fieldsGradients, NeuronStoredValues& derivatives,
-		float* neuronCost, tuple<float, float> hiddenCellGradients, 
+		float* neuronCosts, tuple<float, float> hiddenCellGradients, 
 		float*** networkActivations, float*** networkCosts)
 	{
-		float currentCost = neuronCost[t];
+		float currentCost = neuronCosts[t];
 		currentCost += get<0>(hiddenCellGradients);
 		float outputWeightMultiplicationGradient = currentCost *= derivatives.OutputWeightMultiplication;
 
@@ -141,7 +135,15 @@ private:
 		return output;
 	}
 
-	NeuronStoredValues GetDerivatives(NeuronStoredValues& executionResults)
+	class DerivativeCalculator
+	{
+		void operator()(LSTMNeuron* neuron, size_t t, NeuronStoredValues* executionResults, NeuronStoredValues* derivatives)
+		{
+			derivatives[t] = neuron->CalculateDerivatives(executionResults[t]);
+		}
+	};
+
+	NeuronStoredValues CalculateDerivatives(NeuronStoredValues& executionResults)
 	{
 		NeuronStoredValues derivatives = NeuronStoredValues();
 
