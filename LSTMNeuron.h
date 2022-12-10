@@ -80,7 +80,7 @@ public:
 		tuple<float, float> statesGradients(0.0f, 0.0f);
 		for (size_t t = 0; t < tCount; t++)
 		{
-			statesGradients = CalculateGradients(t, connectionsGradients, fieldsGradients, derivatives[t],
+			statesGradients = CalculateGradients(t, connectionsGradients, fieldsGradients[t], derivatives[t],
 				neuronCosts, statesGradients,
 				networkActivations, networkCosts);
 		}
@@ -95,13 +95,13 @@ private:
 	/// <returns>
 	/// tuple(previous hiddenStateGradient, previous cellStateGradient)
 	/// </returns>
-	tuple<float, float> CalculateGradients(size_t t, NeuronConnectionsInfo* connectionsGradients, float** fieldsGradients, NeuronStoredValues& derivatives,
+	tuple<float, float> CalculateGradients(size_t t, NeuronConnectionsInfo* connectionsGradients, float* fieldsGradients, NeuronStoredValues& derivatives,
 		float* neuronCosts, tuple<float, float> hiddenCellGradients, 
 		float*** networkActivations, float*** networkCosts)
 	{
 		float currentCost = neuronCosts[t];
 		currentCost += get<0>(hiddenCellGradients);
-		float outputWeightMultiplicationGradient = currentCost *= derivatives.OutputWeightMultiplication;
+		float outputWeightGradient = currentCost *= derivatives.OutputWeightMultiplication;
 
 		currentCost *= derivatives.CellStateTanh;
 		currentCost += get<1>(hiddenCellGradients);
@@ -120,7 +120,7 @@ private:
 		float forgetGateWeightGradient = forgetGateGradient *= derivatives.ForgetWeightMultiplication;
 
 
-		currentCost = outputWeightMultiplicationGradient;
+		currentCost = outputWeightGradient;
 
 		currentCost *= derivatives.HiddenLinearSigmoid;
 		currentCost *= connections.GetDerivative(networkActivations[t]);
@@ -130,6 +130,11 @@ private:
 		float* weightsGradients = connections.GetGradients(currentCost, networkActivations[t], networkCosts[t]);
 		connectionsGradients[t] = NeuronConnectionsInfo(connections.GetConnectionCount(), currentCost, weightsGradients, NULL, NULL);
 
+		fieldsGradients = new float[4];
+		fieldsGradients[0] = forgetGateWeightGradient;
+		fieldsGradients[1] = storeGateSigmoidWeightGradient;
+		fieldsGradients[2] = storeGateTanhWeightGradient;
+		fieldsGradients[3] = outputWeightGradient;
 
 		tuple<float, float> output(previousHiddenStateCost, previousCellStateCost);
 		return output;
@@ -191,6 +196,26 @@ private:
 			);
 	}
 
+public:
+	void ApplyGradients(size_t tCount, NeuronConnectionsInfo* connectionsGradients, float** fieldsGradients, float learningRate)
+	{
+		for (size_t t = 0; t < tCount; t++)
+		{
+			connections.ApplyGradients(connectionsGradients[t], )
+		}
+	}
+
+private:
+	class GradientApplyer
+	{
+		void operator()(NeuronConnectionsInfo& connections, size_t t, NeuronConnectionsInfo* connectionsGradients, float** fieldsGradients, float learningRate)
+		{
+			connections.ApplyGradients(connectionsGradients[t], learningRate);
+			delete[] fieldsGradients[t];
+		}
+	};
+
+public:
 	void DeleteMemory()
 	{
 		hiddenState = 0;
