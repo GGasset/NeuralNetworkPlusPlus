@@ -87,7 +87,7 @@ public:
 
 		delete[] derivatives;
 		delete[] threads;
-		tuple<NeuronConnectionsInfo*, float**> output;
+		tuple<NeuronConnectionsInfo*, float**> output(connectionsGradients, fieldsGradients);
 		return output;
 	}
 
