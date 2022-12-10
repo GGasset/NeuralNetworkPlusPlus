@@ -128,7 +128,8 @@ private:
 		float previousHiddenStateCost = currentCost;
 
 		float* weightsGradients = connections.GetGradients(currentCost, networkActivations[t], networkCosts[t]);
-		connectionsGradients[t] = NeuronConnectionsInfo(connections.GetConnectionCount(), currentCost, weightsGradients, NULL, NULL);
+		connectionsGradients[t].Bias = currentCost;
+		connectionsGradients[t].Weights = weightsGradients;
 
 		fieldsGradients = new float[4];
 		fieldsGradients[0] = forgetGateWeightGradient;
